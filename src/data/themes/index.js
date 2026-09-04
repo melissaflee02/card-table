@@ -28,7 +28,6 @@ const HEX_KEYS = [
   'warningBg', 'warningBorder', 'cardFace', 'cardBorder', 'cardBack',
   'diagramArrow', 'diagramGood', 'diagramWarn', 'diagramGoodBg', 'diagramWarnBg',
 ];
-const RAW_KEYS = ['shadowSm', 'shadowMd'];
 
 // Every pair here is real text on a real background somewhere on the site.
 // 4.5:1 is the WCAG AA threshold for body-size text.
@@ -89,7 +88,7 @@ export function validateTheme(key) {
     const p = theme[mode];
     if (!p) { problems.push(`${mode}: missing entirely`); continue; }
 
-    for (const k of [...HEX_KEYS, ...RAW_KEYS]) {
+    for (const k of HEX_KEYS) {
       if (p[k] === undefined) problems.push(`${mode}.${k}: missing`);
     }
     for (const k of HEX_KEYS) {
@@ -130,7 +129,7 @@ export function validateTheme(key) {
 const kebab = (k) => '--' + k.replace(/([a-z])([A-Z0-9])/g, '$1-$2').toLowerCase();
 
 function tokens(palette, indent) {
-  const lines = [...HEX_KEYS, ...RAW_KEYS].map(
+  const lines = HEX_KEYS.map(
     (k) => `${indent}${kebab(k)}: ${palette[k]};`
   );
   // Aliases and derived values, so palettes only ever list real colours.

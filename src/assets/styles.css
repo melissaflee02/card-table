@@ -14,7 +14,6 @@
 :root {
   --font: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
     "Liberation Mono", monospace;
-  --font-mono: var(--font);
 
   --wrap: 76rem;
   /* Monospace runs ~20% wider per character than the old sans, so the reading
@@ -358,7 +357,10 @@ table { font-variant-numeric: tabular-nums; }
   background: var(--surface-2); border-bottom: var(--hair) solid var(--border-strong);
   color: var(--text-muted);
 }
-.callout p + p, .callout > p:last-child { padding: .55rem .6rem; margin: 0; }
+.callout > p:not(.callout__label) { padding: .55rem .6rem; margin: 0; }
+/* The <noscript> fallback is a bare <p class="callout"> with no children, so
+   it needs the padding on itself. */
+p.callout { padding: .55rem .6rem; }
 .callout--tip { border-color: var(--accent); }
 .callout--tip .callout__label { background: var(--accent-soft); color: var(--accent-on-soft); border-bottom-color: var(--accent); }
 .callout--warning { border-color: var(--warning-border); }

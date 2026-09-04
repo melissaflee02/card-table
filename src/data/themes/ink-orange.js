@@ -31,8 +31,6 @@ export default {
     diagramWarn: '#113264',   // blue 12
     diagramGoodBg: '#ffefd6',
     diagramWarnBg: '#f4faff',
-    shadowSm: 'none',
-    shadowMd: 'none',
   },
   dark: {
     bg: '#111111',            // gray dark 1
@@ -61,7 +59,5 @@ export default {
     diagramWarn: '#70b8ff',
     diagramGoodBg: '#331e0b',
     diagramWarnBg: '#111927',
-    shadowSm: 'none',
-    shadowMd: 'none',
   },
 };

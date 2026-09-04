@@ -41,8 +41,6 @@ export default {
     diagramWarn: '#4f3422',   // amber 12 — amber 11 is 4.06:1 on olive 3
     diagramGoodBg: '#eef6d6', // lime 3
     diagramWarnBg: '#fff7c2', // amber 3
-    shadowSm: '0 1px 2px rgb(29 33 28 / 7%), 0 1px 3px rgb(29 33 28 / 5%)',
-    shadowMd: '0 4px 16px rgb(29 33 28 / 10%), 0 1px 3px rgb(29 33 28 / 6%)',
   },
   dark: {
     bg: '#111210',            // olive dark 1
@@ -71,7 +69,5 @@ export default {
     diagramWarn: '#ffca16',   // amber dark 11
     diagramGoodBg: '#1f2917', // lime dark 3
     diagramWarnBg: '#302008', // amber dark 3
-    shadowSm: '0 1px 2px rgb(0 0 0 / 35%)',
-    shadowMd: '0 4px 18px rgb(0 0 0 / 45%)',
   },
 };

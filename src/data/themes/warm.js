@@ -29,8 +29,6 @@ export default {
     diagramWarn: '#8f4419',
     diagramGoodBg: '#e2eee7',
     diagramWarnBg: '#f7e6d7',
-    shadowSm: '0 1px 2px rgb(36 28 18 / 7%), 0 1px 3px rgb(36 28 18 / 5%)',
-    shadowMd: '0 4px 16px rgb(36 28 18 / 10%), 0 1px 3px rgb(36 28 18 / 6%)',
   },
   dark: {
     bg: '#17130e',
@@ -59,7 +57,5 @@ export default {
     diagramWarn: '#e79a5f',
     diagramGoodBg: '#1a2c23',
     diagramWarnBg: '#2e2317',
-    shadowSm: '0 1px 2px rgb(0 0 0 / 35%)',
-    shadowMd: '0 4px 18px rgb(0 0 0 / 45%)',
   },
 };

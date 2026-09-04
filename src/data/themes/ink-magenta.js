@@ -31,8 +31,6 @@ export default {
     diagramWarn: '#582d1d',   // orange 12 — orange 11 is 3.96:1 on gray 3
     diagramGoodBg: '#fee9f5',
     diagramWarnBg: '#fff7ed',
-    shadowSm: 'none',
-    shadowMd: 'none',
   },
   dark: {
     bg: '#111111',            // gray dark 1
@@ -61,7 +59,5 @@ export default {
     diagramWarn: '#ffa057',
     diagramGoodBg: '#37172f',
     diagramWarnBg: '#1e160f',
-    shadowSm: 'none',
-    shadowMd: 'none',
   },
 };
