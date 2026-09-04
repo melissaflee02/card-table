@@ -82,9 +82,18 @@ game data by id:
 { type: 'diagram', id: 'cambio-peek', caption: 'The two cards nearest you…' }
 ```
 
-Current ids: `cambio-peek`, `palace-layers`, `gin-melds`, `gin-knock`,
-`hearts-passing`, `president-exchange`. An unknown id fails the build and lists
-the valid ones.
+Current ids, two or three per game — one for the setup you have to picture, one
+for the mechanic people get wrong:
+
+| Game | Setup | Mechanic |
+|---|---|---|
+| Cambio | `cambio-peek` | `cambio-sticking` |
+| Gin Rummy | `gin-melds` | `gin-knock`, `gin-layoff` |
+| Palace | `palace-layers` | `palace-burn` |
+| Hearts | `hearts-passing` | `hearts-trick` |
+| President | `president-exchange` | `president-beating` |
+
+An unknown id fails the build and lists the valid ones.
 
 These are deliberately **not** one-per-section. A diagram earns its place only
 where prose makes a reader assemble a picture in their head — a card layout, a
@@ -102,7 +111,10 @@ Notes for adding one:
   groups (`gin-knock`) still readable.
 - Size each group by its longest **caption**, not just by its cards. Centred
   text is usually the widest thing in a diagram; `svg()` adds horizontal
-  padding, but that only absorbs a few px of font-rendering variance.
+  padding, but that only absorbs a few px of font-rendering variance. Centring
+  a 76px label over a 46px card overhangs 15px each side — give it a column.
+- Watch for labels that merely sit *close*. Three 28px labels 25px apart do not
+  overlap but read as one run of text; collapse them into one.
 - Diagrams keep natural size and scroll on narrow screens rather than scaling
   down, since shrinking one makes its labels illegible.
 - Print hides them: a game page prints as a one-page cheat sheet.

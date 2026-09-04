@@ -130,6 +130,12 @@ export default {
           text: 'After a normal knock, your opponent lays out their melds and may **lay off** any of their deadwood onto *your* melds — adding a `9♣` to your `10♣ J♣ Q♣`, or a fourth `7` to your set of three. Every card they lay off reduces their deadwood and your score.',
         },
         {
+          type: 'diagram',
+          id: 'gin-layoff',
+          caption:
+            'Laying off is why knocking with 10 is riskier than it looks: every card they attach to your melds shrinks the gap you were counting on scoring.',
+        },
+        {
           type: 'callout',
           variant: 'warning',
           label: 'The undercut',

@@ -104,6 +104,12 @@ export default {
           ],
         },
         {
+          type: 'diagram',
+          id: 'palace-burn',
+          caption:
+            'The four of a kind does not have to be yours. Three other players laid those 9s down across their own turns — you just finished the set and took the whole pile out of the game.',
+        },
+        {
           type: 'p',
           text: 'A burn is the most powerful thing that can happen to you. The pile vanishes, and the player who burned it starts a brand-new pile with a free choice — so save a 10 for when you are cornered.',
         },

@@ -86,6 +86,12 @@ export default {
           ],
         },
         {
+          type: 'diagram',
+          id: 'hearts-trick',
+          caption:
+            'The Ace of Hearts is the highest card played here and still loses. Only clubs can win a trick that was led with clubs — so West has quietly handed East a penalty point.',
+        },
+        {
           type: 'callout',
           variant: 'warning',
           label: 'The first trick is protected',

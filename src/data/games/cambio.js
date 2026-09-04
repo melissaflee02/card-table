@@ -127,6 +127,12 @@ export default {
           ],
         },
         {
+          type: 'diagram',
+          id: 'cambio-sticking',
+          caption:
+            'Only the rank matters — suits are irrelevant. Being wrong costs you twice: the card stays where it was and you gain one you are not allowed to look at.',
+        },
+        {
           type: 'callout',
           variant: 'tip',
           text: 'The strongest legal move in the game: draw a card, discard it, then immediately stick a matching card from your own grid before anyone else reacts. You know your grid better than they do — use the head start.',

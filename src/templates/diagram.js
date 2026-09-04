@@ -56,6 +56,21 @@ const muted = (x, y, text, opts = {}) => `
   <text x="${x}" y="${y}" font-size="${opts.size || 10}" fill="var(--diagram-muted)"
         text-anchor="${opts.anchor || 'middle'}">${esc(text)}</text>`;
 
+/** Coloured emphasis text, for verdicts like "beats it" / "no". */
+const strong = (x, y, text, color, size = 11) => `
+  <text x="${x}" y="${y}" font-size="${size}" font-weight="700" fill="${color}"
+        text-anchor="middle">${esc(text)}</text>`;
+
+/** Highlight ring, for the card that wins or the one that changes things. */
+const ring = (x, y) => `
+  <rect x="${x - 3.5}" y="${y - 3.5}" width="${CARD_W + 7}" height="${CARD_H + 7}" rx="7"
+        fill="none" stroke="var(--diagram-good)" stroke-width="2"/>`;
+
+/** An empty card slot — used to show a pile that has been removed. */
+const ghost = (x, y) => `
+  <rect x="${x}" y="${y}" width="${CARD_W}" height="${CARD_H}" rx="5"
+        fill="none" stroke="var(--diagram-muted)" stroke-width="1.25" stroke-dasharray="4 3"/>`;
+
 function defs(pid, aid) {
   return `
   <defs>
@@ -373,6 +388,201 @@ const BUILDERS = {
         ${defs(`${id}-back`, aid)}
         ${panel(0, 'President', 'Scum', '2 best cards', 'any 2 back')}
         ${panel(P + gap, 'Vice President', 'Vice Scum', '1 best card', 'any 1 back')}`,
+    });
+  },
+
+  /**
+   * Hearts: how a trick is won. The single hardest idea for anyone who has
+   * never played a trick-taking game — that a higher card of the wrong suit
+   * loses to a lower card of the led suit.
+   */
+  'hearts-trick': (id) => {
+    const pid = `${id}-back`;
+    const aid = `${id}-arw`;
+    const step = CARD_W + 16;
+    const rowW = step * 3 + CARD_W;
+    const col = Math.max(rowW, 264);
+    const ox = (col - rowW) / 2;
+    const top = 26;
+    const plays = [
+      { seat: 'N', spec: '7♣', tag: 'leads ♣' },
+      { seat: 'E', spec: 'K♣', tag: 'takes it', win: true },
+      { seat: 'S', spec: '2♣', tag: '' },
+      { seat: 'W', spec: 'A♥', tag: 'no clubs left' },
+    ];
+    const h = top + CARD_H + 52;
+    return svg({
+      id,
+      w: col,
+      h,
+      title: 'Hearts: how a trick is won',
+      desc:
+        'North leads the seven of clubs. East plays the king of clubs, South the two of clubs, and West, holding no clubs, discards the ace of hearts. East wins with the king because it is the highest club. The ace of hearts is a higher card but cannot win, since hearts were not led.',
+      body: `
+        ${defs(pid, aid)}
+        ${plays
+          .map((pl, i) => {
+            const x = ox + i * step;
+            return `
+          ${muted(x + CARD_W / 2, 14, pl.seat, { size: 10.5 })}
+          ${pl.win ? ring(x, top) : ''}
+          ${card(x, top, pl.spec, pid)}
+          ${
+            pl.win
+              ? strong(x + CARD_W / 2, top + CARD_H + 18, pl.tag, 'var(--diagram-good)', 10.5)
+              : muted(x + CARD_W / 2, top + CARD_H + 18, pl.tag)
+          }`;
+          })
+          .join('')}
+        ${muted(col / 2, h - 10, 'highest card of the suit led wins — there is no trump', { size: 10.5 })}`,
+    });
+  },
+
+  /** President: you must match the number of cards, not just outrank them. */
+  'president-beating': (id) => {
+    const pid = `${id}-back`;
+    const aid = `${id}-arw`;
+    const col = 86;
+    const gap = 16;
+    const top = 32;
+    const groups = [
+      { head: 'On the pile', tone: 'var(--diagram-ink)', specs: ['6♥', '6♠'], note: 'a pair of 6s' },
+      { head: 'Beats it', tone: 'var(--diagram-good)', specs: ['7♣', '7♦'], note: 'higher pair' },
+      { head: 'No', tone: 'var(--diagram-warn)', specs: ['K♠'], note: 'only one card' },
+      { head: 'No', tone: 'var(--diagram-warn)', specs: ['4♣', '4♦'], note: 'pair is lower' },
+    ];
+    const OV = 26;
+    const h = top + CARD_H + 34;
+    return svg({
+      id,
+      w: col * 4 + gap * 3,
+      h,
+      title: 'President: matching the number of cards',
+      desc:
+        'A pair of sixes on the pile can be beaten by a pair of sevens, but not by a single king however high it is, and not by a lower pair. You must play the same number of cards at a higher rank.',
+      body: `
+        ${defs(pid, aid)}
+        ${groups
+          .map((g, i) => {
+            const w = CARD_W + OV * (g.specs.length - 1);
+            const x = i * (col + gap);
+            return `<g transform="translate(${x} 0)">
+          ${strong(col / 2, 16, g.head, g.tone)}
+          ${g.specs.map((sp, j) => card((col - w) / 2 + j * OV, top, sp, pid)).join('')}
+          ${muted(col / 2, top + CARD_H + 20, g.note)}
+        </g>`;
+          })
+          .join('')}`,
+    });
+  },
+
+  /** Gin Rummy: laying off, where their deadwood joins your melds. */
+  'gin-layoff': (id) => {
+    const pid = `${id}-back`;
+    const aid = `${id}-arw`;
+    const step = CARD_W + 6;
+    const runW = step * 2 + CARD_W;
+    const gapArrow = 46;
+    const top = 30;
+    // Column sized for the "their deadwood" label, not for the single card —
+    // centring a 76px label over a 46px card overhangs both edges.
+    const colLeft = 84;
+    const cardX = (colLeft - CARD_W) / 2;
+    const runX = colLeft + gapArrow;
+    const w = runX + runW;
+    const h = top + CARD_H + 40;
+    return svg({
+      id,
+      w,
+      h,
+      title: 'Gin Rummy: laying off after a knock',
+      desc:
+        'You knocked with a run of ten, jack and queen of clubs. Your opponent holds the nine of clubs as deadwood. They may lay it onto the low end of your run, so those nine points stop counting against them.',
+      body: `
+        ${defs(pid, aid)}
+        ${muted(colLeft / 2, 14, 'their deadwood')}
+        ${card(cardX, top, '9♣', pid)}
+        ${arrow(colLeft + 10, top + CARD_H / 2, runX - 10, top + CARD_H / 2, aid)}
+        ${muted(colLeft + gapArrow / 2, top + CARD_H / 2 - 10, 'lays off')}
+        <g transform="translate(${runX} 0)">
+          ${muted(runW / 2, 14, 'your run, after you knocked')}
+          ${['10♣', 'J♣', 'Q♣'].map((sp, i) => card(i * step, top, sp, pid)).join('')}
+        </g>
+        ${muted(w / 2, h - 10, 'the 9♣ extends your run — 9 points off their score', { size: 10.5 })}`,
+    });
+  },
+
+  /** Cambio: sticking, and the cost of getting it wrong. */
+  'cambio-sticking': (id) => {
+    const pid = `${id}-back`;
+    const aid = `${id}-arw`;
+    const col = 178;
+    const gap = 32;
+    const top = 30;
+    const gapArrow = 34;
+    const rowW = CARD_W * 2 + gapArrow;
+    const ox = (col - rowW) / 2;
+
+    const panel = (i, head, tone, yours, note, dashed) => `
+      <g transform="translate(${i * (col + gap)} 0)">
+        ${strong(col / 2, 16, head, tone)}
+        ${card(ox, top, yours, pid)}
+        ${arrow(ox + CARD_W + 8, top + CARD_H / 2, ox + CARD_W + gapArrow - 8, top + CARD_H / 2, aid, dashed)}
+        ${card(ox + CARD_W + gapArrow, top, '8♦', pid)}
+        ${muted(ox + CARD_W / 2, top + CARD_H + 18, 'your card')}
+        ${muted(ox + CARD_W + gapArrow + CARD_W / 2, top + CARD_H + 18, 'discard pile')}
+        ${muted(col / 2, top + CARD_H + 36, note, { size: 10.5 })}
+      </g>`;
+
+    const h = top + CARD_H + 48;
+    return svg({
+      id,
+      w: col * 2 + gap,
+      h,
+      title: 'Cambio: sticking a card',
+      desc:
+        'If a card in your grid matches the rank on top of the discard pile you may slap it down at any moment, even out of turn, and it leaves your grid for good. Slap down a card that does not match and it stays put and you take a penalty card as well.',
+      body: `
+        ${defs(pid, aid)}
+        ${panel(0, 'Right — 8 on 8', 'var(--diagram-good)', '8♣', 'gone for good, your hand shrinks', false)}
+        ${panel(1, 'Wrong — 5 on 8', 'var(--diagram-warn)', '5♠', 'card stays, and you take a penalty', true)}`,
+    });
+  },
+
+  /** Palace: burning the pile, including off other players' cards. */
+  'palace-burn': (id) => {
+    const pid = `${id}-back`;
+    const aid = `${id}-arw`;
+    const OV = 25;
+    const pileW = CARD_W + OV * 3;
+    const gapArrow = 46;
+    const top = 30;
+    const ghostX = pileW + gapArrow;
+    const w = ghostX + CARD_W;
+    const h = top + CARD_H + 46;
+    return svg({
+      id,
+      w: Math.max(w, 286),
+      h,
+      title: 'Palace: burning the pile',
+      desc:
+        'Three players have each played a nine onto the pile in turn. You play the fourth nine, which completes four of a kind and removes the whole pile from the game, and then you play again. A ten does the same thing on its own.',
+      body: `
+        ${defs(pid, aid)}
+        ${muted(OV * 3 / 2 - 6, 14, 'others', { size: 9.5 })}
+        ${muted(OV * 3 + CARD_W / 2, 14, 'you', { size: 9.5 })}
+        ${['9♠', '9♥', '9♦', '9♣']
+          .map((sp, i) => {
+            const x = i * OV;
+            return `${i === 3 ? ring(x, top) : ''}${card(x, top, sp, pid)}`;
+          })
+          .join('')}
+        ${arrow(pileW + 10, top + CARD_H / 2, ghostX - 10, top + CARD_H / 2, aid)}
+        ${muted(pileW + gapArrow / 2, top + CARD_H / 2 - 10, 'burn')}
+        ${ghost(ghostX, top)}
+        ${muted(ghostX + CARD_W / 2, top + CARD_H + 18, 'pile gone')}
+        ${muted(pileW / 2, top + CARD_H + 18, 'four 9s complete the set')}
+        ${muted(Math.max(w, 286) / 2, h - 8, 'the whole pile leaves the game — and you play again', { size: 10.5 })}`,
     });
   },
 };

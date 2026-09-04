@@ -55,6 +55,12 @@ export default {
           ],
         },
         {
+          type: 'diagram',
+          id: 'president-beating',
+          caption:
+            'A King is the second-highest card in the deck and it still cannot touch a pair of 6s. Count first, rank second.',
+        },
+        {
           type: 'callout',
           variant: 'tip',
           text: 'Winning a round is powerful: you get to set the next shape. If you are holding three 4s, win a round and lead them — nobody can touch them with singles.',
