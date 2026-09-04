@@ -80,7 +80,7 @@ colours for light mode and 24 for dark. To switch:
 
 ```js
 // src/data/themes/index.js
-export const ACTIVE = 'slate';   // 'default' | 'slate' | 'warm'
+export const ACTIVE = 'radix-lime';   // 'default' | 'slate' | 'warm' | 'radix-lime'
 ```
 
 Then `npm run build`. Nothing else needs touching — `build.js` generates
@@ -96,7 +96,8 @@ Copy `src/data/themes/default.js`, change the hex values, import it in
 | Page | `bg`, `surface`, `surface2` |
 | Lines | `border`, `borderStrong`, `inputBorder` |
 | Text | `text`, `textMuted` |
-| Brand | `accent`, `accentHover`, `accentOn`, `accentSoft` |
+| Brand text | `accent`, `accentHover`, `accentSoft`, `accentOnSoft` |
+| Brand solid | `accentSolid`, `accentSolidHover`, `accentOnSolid` |
 | Callouts | `suitRed`, `warningBg`, `warningBorder` |
 | Cards | `cardFace`, `cardBorder`, `cardBack` |
 | Diagrams | `diagramArrow`, `diagramGood`, `diagramWarn`, `diagramGoodBg`, `diagramWarnBg` |
@@ -105,9 +106,32 @@ Copy `src/data/themes/default.js`, change the hex values, import it in
 `--diagram-ink`, `--diagram-muted` and `--card-back-line` are derived, so
 palettes only ever list real colours.
 
-Want a fast reskin without a full palette? Change `accent`, `accentHover`,
-`accentSoft` and `accentOn` — that is 23 of the ~40 colour references on the
-site. Also set `cardBack` to match, since face-down cards use their own value.
+Want a fast reskin without a full palette? Change the brand groups and
+`cardBack` — that is most of the colour references on the site.
+
+### Why the accent has six tokens
+
+An accent does two incompatible jobs: it is link text (needs 4.5:1 against the
+page) and it is a solid button background (needs 4.5:1 against whatever sits on
+*it*). A dark accent satisfies both by accident, which is why one token worked
+until it didn't.
+
+Radix's **bright** scales — lime, amber, yellow, mint, sky — break it. Lime's
+solid step is `#bdee63`; white text on that is about 1.4:1. So the roles are
+separate:
+
+| Token | Job | Radix step |
+|---|---|---|
+| `accent` | Link and icon text on the page | 11 |
+| `accentHover` | Hovered link text | 12 |
+| `accentSoft` | Tinted background | 3 |
+| `accentOnSoft` | Accent text *on* that tint | 11 or 12 |
+| `accentSolid` | Solid button / header background | 9 |
+| `accentSolidHover` | Hovered solid | 10 |
+| `accentOnSolid` | Text on the solid | 12, **dark even in dark mode** |
+
+For a bright scale `accentOnSolid` stays dark in *both* modes, because step 9
+stays bright in both. `radix-lime.js` is the worked example.
 
 ### The build will stop you shipping an unreadable theme
 

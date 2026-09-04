@@ -2,13 +2,14 @@ import { contrastRatio } from '../../lib/contrast.js';
 import defaultTheme from './default.js';
 import slate from './slate.js';
 import warm from './warm.js';
+import radixLime from './radix-lime.js';
 
-export const THEMES = { default: defaultTheme, slate, warm };
+export const THEMES = { default: defaultTheme, slate, warm, 'radix-lime': radixLime };
 
 // ---------------------------------------------------------------------------
 // Change this one line to reskin the whole site, then `npm run build`.
 // ---------------------------------------------------------------------------
-export const ACTIVE = 'default';
+export const ACTIVE = 'radix-lime';
 
 // Card faces are deliberately near-white in both themes and the ink on them is
 // fixed, because a playing card is white — inverting one in dark mode reads as
@@ -18,7 +19,8 @@ const CARD_RED = '#b3231a';
 
 const HEX_KEYS = [
   'bg', 'surface', 'surface2', 'border', 'borderStrong', 'text', 'textMuted',
-  'inputBorder', 'accent', 'accentHover', 'accentOn', 'accentSoft', 'suitRed',
+  'inputBorder', 'accent', 'accentHover', 'accentSoft', 'accentOnSoft',
+  'accentSolid', 'accentSolidHover', 'accentOnSolid', 'suitRed',
   'warningBg', 'warningBorder', 'cardFace', 'cardBorder', 'cardBack',
   'diagramArrow', 'diagramGood', 'diagramWarn', 'diagramGoodBg', 'diagramWarnBg',
 ];
@@ -35,8 +37,9 @@ const TEXT_PAIRS = [
   ['textMuted', 'surface2', 'diagram labels, table headers'],
   ['accent', 'bg', 'links on the page'],
   ['accent', 'surface', 'links on a card'],
-  ['accent', 'accentSoft', 'active nav pill, easy pill, hint numbers'],
-  ['accentOn', 'accent', 'button text, cheat-sheet header'],
+  ['accentOnSoft', 'accentSoft', 'active nav pill, easy pill, hint numbers'],
+  ['text', 'accentSoft', 'objective box and score-tracker banner body text'],
+  ['accentOnSolid', 'accentSolid', 'button text, cheat-sheet header, brand mark'],
   ['suitRed', 'warningBg', 'the "watch out" callout label'],
   ['text', 'warningBg', 'warning callout body'],
   ['diagramGood', 'surface2', 'diagram "0 points" / verdict text'],
