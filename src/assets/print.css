@@ -1,0 +1,141 @@
+/* Print = a one-page cheat sheet. Everything that exists to help you navigate
+   the page on screen is chrome, and chrome does not belong on paper. */
+
+@page {
+  margin: 12mm;
+}
+
+:root {
+  /* Force the light palette — dark mode on paper wastes ink and reads badly. */
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #ffffff;
+  --surface-3: #ffffff;
+  --border: #bbbbbb;
+  --border-strong: #888888;
+  --text: #000000;
+  --text-muted: #333333;
+  --accent: #000000;
+  --accent-on: #ffffff;
+  --accent-soft: #f0f0f0;
+  --shadow-sm: none;
+  --shadow-md: none;
+}
+
+body {
+  background: #fff !important;
+  color: #000 !important;
+  font-size: 10.5pt;
+  line-height: 1.4;
+}
+
+/* --- Hide the chrome --- */
+.site-header,
+.site-footer,
+.anchor-nav,
+.crumb,
+.pager,
+.skip-link,
+.theme-toggle,
+.finder,
+.coming-soon,
+.tracker,
+.cheatsheet__head button,
+.section__lede {
+  display: none !important;
+}
+
+/* --- Game page: cheat sheet only --- */
+
+/* Everything before the cheat sheet is reference material you already read. */
+.page-game .section:not(.cheatsheet) {
+  display: none !important;
+}
+
+.page-game .game__header {
+  padding: 0 0 4mm;
+  max-width: none;
+  border-bottom: 1.5pt solid #000;
+  margin-bottom: 5mm;
+}
+.page-game .game__header h1 { font-size: 22pt; margin-bottom: 1mm; }
+.page-game .game__tagline { font-size: 10pt; margin-bottom: 3mm; font-style: italic; }
+.page-game .aliases { font-size: 9pt; margin-bottom: 2mm; }
+
+.page-game .stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 6mm;
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+.page-game .stats__item { padding: 0; background: none; }
+.page-game .stats dt { display: inline; font-size: 8pt; }
+.page-game .stats dt::after { content: ": "; }
+.page-game .stats dd { display: inline; font-size: 9pt; }
+
+.page-game .cheatsheet { margin: 0; }
+.page-game .cheatsheet__card {
+  border: 1pt solid #000;
+  border-radius: 0;
+  break-inside: avoid;
+}
+/* The page h1 and stats row above already give the name, players, time and
+   deck — the card's own header would just repeat them and eat a third of the
+   page. */
+.page-game .cheatsheet__title { display: none !important; }
+
+.page-game .cheatsheet__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  background: none;
+}
+.page-game .cheatsheet__cell {
+  padding: 3mm 4mm;
+  font-size: 9.5pt;
+  border-right: 0.5pt solid #999;
+  border-bottom: 0.5pt solid #999;
+  break-inside: avoid;
+}
+.page-game .cheatsheet__cell:nth-child(2n) { border-right: 0; }
+.page-game .cheatsheet__cell:nth-last-child(-n + 2) { border-bottom: 0; }
+.page-game .cheatsheet__cell h4 { font-size: 8.5pt; margin-bottom: 1.5mm; color: #000; }
+.page-game .cheatsheet__cell ul,
+.page-game .cheatsheet__cell ol { padding-left: 4.5mm; }
+.page-game .cheatsheet__cell li { margin-bottom: 1mm; }
+
+/* --- Homepage: a plain index of games --- */
+
+.page-home .hero { padding: 0 0 4mm; max-width: none; }
+.page-home .hero h1 { font-size: 20pt; }
+.page-home .hero__sub { font-size: 10pt; }
+.page-home .game-grid { display: block; }
+.page-home .card-item { break-inside: avoid; }
+.page-home .game-card {
+  display: block;
+  padding: 2mm 0;
+  border: 0;
+  border-bottom: 0.5pt solid #ccc;
+  border-radius: 0;
+  box-shadow: none;
+}
+.page-home .game-card__suit,
+.page-home .empty { display: none !important; }
+.page-home .game-card__name { font-size: 12pt; display: inline; }
+.page-home .game-card__aka { display: inline; font-size: 9pt; }
+.page-home .game-card__aka::before { content: " — "; }
+.page-home .game-card__tagline { font-size: 9.5pt; margin: 1mm 0; }
+.page-home .pill { border: 0; padding: 0; font-size: 8.5pt; }
+.page-home .pill + .pill::before { content: " · "; }
+
+/* Print the URL after a link so a printed page is still useful. */
+.page-home .game-card::after {
+  content: " " attr(href);
+  font-size: 8pt;
+  color: #555;
+}
+
+table, tr, .callout, .example { break-inside: avoid; }
+h1, h2, h3, h4 { break-after: avoid; }
