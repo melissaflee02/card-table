@@ -239,8 +239,8 @@ const BUILDERS = {
         'A set is three or four cards of the same rank in any suits. A run is three or more consecutive cards all in one suit. Those are the only two combinations that count.',
       body: `
         ${defs(pid, aid)}
-        ${group(0, 'Set — same rank', ['7♠', '7♥', '7♦'], 'any suits, 3 or 4 cards')}
-        ${group(groupW + gap, 'Run — same suit', ['4♣', '5♣', '6♣'], 'consecutive, 3 or more cards')}`,
+        ${group(0, 'Set — same rank', ['7♠', '7♥', '7♦'], '3 or 4, any suits')}
+        ${group(groupW + gap, 'Run — same suit', ['4♣', '5♣', '6♣'], '3 or more, in order')}`,
     });
   },
 
@@ -278,7 +278,7 @@ const BUILDERS = {
         ${group(0, 'Run', ['4♣', '5♣', '6♣'], '0 points', 'var(--diagram-good)')}
         ${group(g1 + gap, 'Set', ['9♥', '9♠', '9♦'], '0 points', 'var(--diagram-good)')}
         ${group(g1 + gap + g2 + gap, 'Deadwood', ['A♠', '2♦', '3♥', '4♦'], '1+2+3+4 = 10 points', 'var(--diagram-warn)')}
-        ${muted(w / 2, h - 8, 'deadwood of 10 or less — you may knock', { size: 11 })}`,
+        ${muted(w / 2, h - 8, '10 or less — you may knock', { size: 11 })}`,
     });
   },
 
@@ -434,7 +434,7 @@ const BUILDERS = {
           }`;
           })
           .join('')}
-        ${muted(col / 2, h - 10, 'highest card of the suit led wins — there is no trump', { size: 10.5 })}`,
+        ${muted(col / 2, h - 10, 'led suit wins — no trump', { size: 10.5 })}`,
     });
   },
 
@@ -505,10 +505,10 @@ const BUILDERS = {
         ${arrow(colLeft + 10, top + CARD_H / 2, runX - 10, top + CARD_H / 2, aid)}
         ${muted(colLeft + gapArrow / 2, top + CARD_H / 2 - 10, 'lays off')}
         <g transform="translate(${runX} 0)">
-          ${muted(runW / 2, 14, 'your run, after you knocked')}
+          ${muted(runW / 2, 14, 'your run')}
           ${['10♣', 'J♣', 'Q♣'].map((sp, i) => card(i * step, top, sp, pid)).join('')}
         </g>
-        ${muted(w / 2, h - 10, 'the 9♣ extends your run — 9 points off their score', { size: 10.5 })}`,
+        ${muted(w / 2, h - 10, '9 points off their score', { size: 10.5 })}`,
     });
   },
 
@@ -544,8 +544,8 @@ const BUILDERS = {
         'If a card in your grid matches the rank on top of the discard pile you may slap it down at any moment, even out of turn, and it leaves your grid for good. Slap down a card that does not match and it stays put and you take a penalty card as well.',
       body: `
         ${defs(pid, aid)}
-        ${panel(0, 'Right — 8 on 8', 'var(--diagram-good)', '8♣', 'gone for good, your hand shrinks', false)}
-        ${panel(1, 'Wrong — 5 on 8', 'var(--diagram-warn)', '5♠', 'card stays, and you take a penalty', true)}`,
+        ${panel(0, 'Right — 8 on 8', 'var(--diagram-good)', '8♣', 'gone for good', false)}
+        ${panel(1, 'Wrong — 5 on 8', 'var(--diagram-warn)', '5♠', 'stays + penalty card', true)}`,
     });
   },
 
@@ -581,8 +581,8 @@ const BUILDERS = {
         ${muted(pileW + gapArrow / 2, top + CARD_H / 2 - 10, 'burn')}
         ${ghost(ghostX, top)}
         ${muted(ghostX + CARD_W / 2, top + CARD_H + 18, 'pile gone')}
-        ${muted(pileW / 2, top + CARD_H + 18, 'four 9s complete the set')}
-        ${muted(Math.max(w, 286) / 2, h - 8, 'the whole pile leaves the game — and you play again', { size: 10.5 })}`,
+        ${muted(pileW / 2, top + CARD_H + 18, 'four of a kind')}
+        ${muted(Math.max(w, 286) / 2, h - 8, 'you play again', { size: 10.5 })}`,
     });
   },
 };

@@ -3,13 +3,17 @@ import defaultTheme from './default.js';
 import slate from './slate.js';
 import warm from './warm.js';
 import radixLime from './radix-lime.js';
+import inkBlue from './ink-blue.js';
+import inkOrange from './ink-orange.js';
+import inkMagenta from './ink-magenta.js';
 
-export const THEMES = { default: defaultTheme, slate, warm, 'radix-lime': radixLime };
+export const THEMES = { default: defaultTheme, slate, warm, 'radix-lime': radixLime,
+  'ink-blue': inkBlue, 'ink-orange': inkOrange, 'ink-magenta': inkMagenta };
 
 // ---------------------------------------------------------------------------
 // Change this one line to reskin the whole site, then `npm run build`.
 // ---------------------------------------------------------------------------
-export const ACTIVE = 'radix-lime';
+export const ACTIVE = 'ink-blue';
 
 // Card faces are deliberately near-white in both themes and the ink on them is
 // fixed, because a playing card is white — inverting one in dark mode reads as
@@ -37,7 +41,9 @@ const TEXT_PAIRS = [
   ['textMuted', 'surface2', 'diagram labels, table headers'],
   ['accent', 'bg', 'links on the page'],
   ['accent', 'surface', 'links on a card'],
-  ['accentOnSoft', 'accentSoft', 'active nav pill, easy pill, hint numbers'],
+  ['accentOnSoft', 'accentSoft', 'hint numbers, tip label, tracker leader'],
+  ['accentOnSoft', 'surface', 'the [EASY] tag on a game card'],
+  ['accentOnSoft', 'surface2', 'hovered pager link, hovered game card, details markers'],
   ['text', 'accentSoft', 'objective box and score-tracker banner body text'],
   ['accentOnSolid', 'accentSolid', 'button text, cheat-sheet header, brand mark'],
   ['suitRed', 'warningBg', 'the "watch out" callout label'],

@@ -73,6 +73,29 @@ is HTML-escaped first, so rules text can contain `<`, `>` and `&` safely.
 - `scoring: null` means no score tracker is rendered and `scorer.js` is not
   loaded (Palace works this way).
 
+## Design language
+
+The site is styled as a **technical manual**: monospace throughout, zero border
+radius, hard 1px rules, inverted heading blocks, key/value tables. Density and
+borders do the work that whitespace and shadows do in a softer design.
+
+Two colours carry meaning, and the split is deliberate:
+
+- **Black** is structure — section headings, table heads, the site header.
+- **The ink** is state and interaction — links, the active nav item, buttons,
+  checked filters, the winning card in a diagram.
+
+If you add a component, follow that split. An accent-coloured section heading
+would read as a link.
+
+Two things the monospace stack forces, both easy to trip over:
+
+- Mono runs ~20% wider per character, so `--wrap-article` is 44rem rather than
+  52rem to keep lines near 75 characters.
+- Diagram labels inherit `--font`, so switching fonts changes SVG label widths
+  and can push text outside its `viewBox`. Re-run the geometry check below
+  after any font change — it caught four clipped diagrams on this one.
+
 ## Changing the colour scheme
 
 Palettes live in `src/data/themes/`. One file per theme, each listing 24 hex
@@ -80,7 +103,9 @@ colours for light mode and 24 for dark. To switch:
 
 ```js
 // src/data/themes/index.js
-export const ACTIVE = 'radix-lime';   // 'default' | 'slate' | 'warm' | 'radix-lime'
+export const ACTIVE = 'ink-blue';
+// 'ink-blue' | 'ink-orange' | 'ink-magenta'   ← built for the manual layout
+// 'default'  | 'slate' | 'warm' | 'radix-lime' ← from the earlier soft layout
 ```
 
 Then `npm run build`. Nothing else needs touching — `build.js` generates
