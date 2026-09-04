@@ -22,6 +22,7 @@ export function layout({ title, description, body, base = '', scripts = [], body
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:type" content="website">
 <meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="${base}assets/theme.css">
 <link rel="stylesheet" href="${base}assets/styles.css">
 <link rel="stylesheet" href="${base}assets/print.css" media="print">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127183;</text></svg>">

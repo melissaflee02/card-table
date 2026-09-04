@@ -1,113 +1,22 @@
 /* ==========================================================================
-   Card Table — design tokens
-   Light is the default; dark mode is a token swap, not a second stylesheet.
+   Card Table — layout, components, type.
+
+   Colours live in src/data/themes/*.js and are emitted to assets/theme.css by
+   build.js, which also fails the build if a palette drops below WCAG contrast.
+   Do not add raw colours here — add a token to the palette instead.
    ========================================================================== */
 
+/* Non-colour tokens: the shape and rhythm of the site. */
 :root {
-  --bg: #fbfaf8;
-  --surface: #ffffff;
-  --surface-2: #f4f2ee;
-  --surface-3: #ebe8e2;
-  --border: #e3ded5;
-  --border-strong: #cec7bb;
-  --text: #1b1a17;
-  --text-muted: #5e574e;
-  --accent: #135e47;
-  --accent-hover: #0e4936;
-  --accent-on: #ffffff;
-  --accent-soft: #e4efea;
-  --suit-red: #a92218;
-  --warning-bg: #fdf3e3;
-  --warning-border: #e8c88a;
-  --shadow-sm: 0 1px 2px rgb(28 26 23 / 6%), 0 1px 3px rgb(28 26 23 / 4%);
-  --shadow-md: 0 4px 16px rgb(28 26 23 / 8%), 0 1px 3px rgb(28 26 23 / 5%);
-
-  /* Diagram palette. Card faces stay light in BOTH themes — a playing card
-     is white, and inverting it in dark mode reads as a rendering bug. */
-  --card-face: #ffffff;
-  --card-border: #c9c2b6;
-  --card-back: #135e47;
-  --card-back-line: rgb(255 255 255 / 30%);
-  --diagram-ink: var(--text);
-  --diagram-muted: var(--text-muted);
-  --diagram-arrow: #8a8378;
-  --diagram-good: #1a6b4f;
-  --diagram-warn: #9c5426;
-  --diagram-good-bg: #e4efea;
-  --diagram-warn-bg: #f7ecdb;
-
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
     Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
-  --measure: 68ch;
   --wrap: 74rem;
   --wrap-article: 52rem;
   --radius: 10px;
   --radius-lg: 16px;
   --nav-h: 3.25rem;
-}
-
-:root[data-theme="dark"] {
-  --bg: #15181a;
-  --surface: #1d2124;
-  --surface-2: #24292d;
-  --surface-3: #2d3338;
-  --border: #343a40;
-  --border-strong: #4a5259;
-  --text: #ecebe7;
-  --text-muted: #a8a39b;
-  --accent: #57c39b;
-  --accent-hover: #74d3b0;
-  --accent-on: #06231a;
-  --accent-soft: #1b2e27;
-  --suit-red: #ff9a8f;
-  --warning-bg: #2c2317;
-  --warning-border: #6b5426;
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
-  --shadow-md: 0 4px 18px rgb(0 0 0 / 40%);
-
-  --card-face: #f0eee9;
-  --card-border: #5c6368;
-  --card-back: #2d7a5e;
-  --card-back-line: rgb(255 255 255 / 26%);
-  --diagram-arrow: #8c948f;
-  --diagram-good: #57c39b;
-  --diagram-warn: #e0a463;
-  --diagram-good-bg: #1b2e27;
-  --diagram-warn-bg: #2f2619;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #15181a;
-    --surface: #1d2124;
-    --surface-2: #24292d;
-    --surface-3: #2d3338;
-    --border: #343a40;
-    --border-strong: #4a5259;
-    --text: #ecebe7;
-    --text-muted: #a8a39b;
-    --accent: #57c39b;
-    --accent-hover: #74d3b0;
-    --accent-on: #06231a;
-    --accent-soft: #1b2e27;
-    --suit-red: #ff9a8f;
-    --warning-bg: #2c2317;
-    --warning-border: #6b5426;
-    --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
-    --shadow-md: 0 4px 18px rgb(0 0 0 / 40%);
-
-    --card-face: #f0eee9;
-    --card-border: #5c6368;
-    --card-back: #2d7a5e;
-    --card-back-line: rgb(255 255 255 / 26%);
-    --diagram-arrow: #8c948f;
-    --diagram-good: #57c39b;
-    --diagram-warn: #e0a463;
-    --diagram-good-bg: #1b2e27;
-    --diagram-warn-bg: #2f2619;
-  }
 }
 
 /* ---------- Base ---------- */
@@ -301,7 +210,7 @@ strong { font-weight: 650; }
   font: inherit;
   color: var(--text);
   background: var(--bg);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--input-border);
   border-radius: var(--radius);
 }
 .finder__search input::placeholder { color: var(--text-muted); opacity: 0.8; }
@@ -846,7 +755,7 @@ tbody tr:hover { background: var(--surface-2); }
   font-size: 0.9rem;
   color: var(--text);
   background: var(--surface);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--input-border);
   border-radius: 7px;
 }
 .tracker__actions {
@@ -869,7 +778,7 @@ tbody tr:hover { background: var(--surface-2); }
   text-align: center;
   color: var(--text);
   background: var(--bg);
-  border: 1px solid var(--border);
+  border: 1px solid var(--input-border);
   border-radius: 6px;
   font-variant-numeric: tabular-nums;
 }

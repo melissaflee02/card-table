@@ -73,6 +73,72 @@ is HTML-escaped first, so rules text can contain `<`, `>` and `&` safely.
 - `scoring: null` means no score tracker is rendered and `scorer.js` is not
   loaded (Palace works this way).
 
+## Changing the colour scheme
+
+Palettes live in `src/data/themes/`. One file per theme, each listing 24 hex
+colours for light mode and 24 for dark. To switch:
+
+```js
+// src/data/themes/index.js
+export const ACTIVE = 'slate';   // 'default' | 'slate' | 'warm'
+```
+
+Then `npm run build`. Nothing else needs touching — `build.js` generates
+`dist/assets/theme.css` from the palette and every component picks it up.
+
+### Adding a palette
+
+Copy `src/data/themes/default.js`, change the hex values, import it in
+`index.js`, and point `ACTIVE` at it. The keys are:
+
+| Group | Keys |
+|---|---|
+| Page | `bg`, `surface`, `surface2` |
+| Lines | `border`, `borderStrong`, `inputBorder` |
+| Text | `text`, `textMuted` |
+| Brand | `accent`, `accentHover`, `accentOn`, `accentSoft` |
+| Callouts | `suitRed`, `warningBg`, `warningBorder` |
+| Cards | `cardFace`, `cardBorder`, `cardBack` |
+| Diagrams | `diagramArrow`, `diagramGood`, `diagramWarn`, `diagramGoodBg`, `diagramWarnBg` |
+| Shadows | `shadowSm`, `shadowMd` (raw CSS, not validated) |
+
+`--diagram-ink`, `--diagram-muted` and `--card-back-line` are derived, so
+palettes only ever list real colours.
+
+Want a fast reskin without a full palette? Change `accent`, `accentHover`,
+`accentSoft` and `accentOn` — that is 23 of the ~40 colour references on the
+site. Also set `cardBack` to match, since face-down cards use their own value.
+
+### The build will stop you shipping an unreadable theme
+
+`validateTheme()` checks every real text-on-background pair in the site at
+**4.5:1** (WCAG AA), and graphical elements at **3:1** (SC 1.4.11), in both
+light and dark. A failing palette fails the build and lists every problem:
+
+```
+Build failed: Theme "default" (Default) fails accessibility checks:
+    - light: textMuted on bg is 2.21:1 (need 4.5) — muted text on the page
+    - light: textMuted on surface is 2.3:1 (need 4.5) — muted text on a card
+```
+
+Two deliberate decisions in that checker, both commented in `index.js`:
+
+- **Card faces must stay light in both themes.** The ink on them is fixed in
+  `diagram.js`, because a playing card is white and inverting one in dark mode
+  reads as a rendering bug. A dark `cardFace` fails the build.
+- **Card outlines are exempt from 3:1.** They sit at ~1.1:1 against the diagram
+  frame, so the outline really is what separates a card from the background.
+  But the *content* — rank and suit — is carried at 17:1 and 6.6:1, and
+  grouping by layout. Forcing outlines to 3:1 means mid-grey borders on white
+  cards, which no real deck has.
+
+### Non-colour styling
+
+`--font`, `--radius`, `--radius-lg`, `--wrap`, `--wrap-article` and `--nav-h`
+stay in `src/assets/styles.css` — they are shape, not palette. Setting
+`--radius: 2px` and swapping `--font` changes the site's personality without
+touching a single colour.
+
 ## Diagrams
 
 `src/templates/diagram.js` holds hand-built inline SVG diagrams, referenced from

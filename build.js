@@ -7,6 +7,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { GAMES, PLANNED } from './src/data/index.js';
+import { ACTIVE, THEMES, themeCss } from './src/data/themes/index.js';
 import { homePage } from './src/templates/home.js';
 import { gamePage } from './src/templates/game.js';
 
@@ -88,6 +89,10 @@ async function build() {
 
   await copyAssets();
 
+  // Throws with every failing contrast pair if the palette is inaccessible.
+  await writeFile(join(dist, 'assets', 'theme.css'), themeCss(ACTIVE));
+
+  console.log(`Theme: ${THEMES[ACTIVE].name} (${ACTIVE})`);
   console.log(`Built ${GAMES.length} game page${GAMES.length === 1 ? '' : 's'} + homepage into dist/`);
   for (const g of GAMES) console.log(`  games/${g.slug}.html  ${g.name}`);
 }
