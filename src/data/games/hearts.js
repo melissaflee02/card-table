@@ -57,6 +57,11 @@ export default {
         },
         { type: 'p', text: 'Then the cycle repeats from the top.' },
         {
+          type: 'diagram',
+          id: 'hearts-passing',
+          caption: 'Seats are lettered by compass point. On the fourth hand nobody passes, so you play the hand you were dealt.',
+        },
+        {
           type: 'callout',
           variant: 'warning',
           text: 'You must place your three cards face down and pass them **before** you look at the three coming to you. No peeking first, then deciding.',

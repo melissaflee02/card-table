@@ -32,6 +32,12 @@ export default {
           text: 'The rest of the deck goes face down in the middle as the **draw pile**.',
         },
         {
+          type: 'diagram',
+          id: 'palace-layers',
+          caption:
+            'Nine cards each, in three layers. You play the hand first, then the face-up row, then the face-down row — and you only find out what those last three are as you flip them.',
+        },
+        {
           type: 'callout',
           variant: 'tip',
           label: 'The swap phase',

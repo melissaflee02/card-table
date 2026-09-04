@@ -22,6 +22,20 @@
   --shadow-sm: 0 1px 2px rgb(28 26 23 / 6%), 0 1px 3px rgb(28 26 23 / 4%);
   --shadow-md: 0 4px 16px rgb(28 26 23 / 8%), 0 1px 3px rgb(28 26 23 / 5%);
 
+  /* Diagram palette. Card faces stay light in BOTH themes — a playing card
+     is white, and inverting it in dark mode reads as a rendering bug. */
+  --card-face: #ffffff;
+  --card-border: #c9c2b6;
+  --card-back: #135e47;
+  --card-back-line: rgb(255 255 255 / 30%);
+  --diagram-ink: var(--text);
+  --diagram-muted: var(--text-muted);
+  --diagram-arrow: #8a8378;
+  --diagram-good: #1a6b4f;
+  --diagram-warn: #9c5426;
+  --diagram-good-bg: #e4efea;
+  --diagram-warn-bg: #f7ecdb;
+
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
     Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
@@ -52,6 +66,16 @@
   --warning-border: #6b5426;
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
   --shadow-md: 0 4px 18px rgb(0 0 0 / 40%);
+
+  --card-face: #f0eee9;
+  --card-border: #5c6368;
+  --card-back: #2d7a5e;
+  --card-back-line: rgb(255 255 255 / 26%);
+  --diagram-arrow: #8c948f;
+  --diagram-good: #57c39b;
+  --diagram-warn: #e0a463;
+  --diagram-good-bg: #1b2e27;
+  --diagram-warn-bg: #2f2619;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -73,6 +97,16 @@
     --warning-border: #6b5426;
     --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
     --shadow-md: 0 4px 18px rgb(0 0 0 / 40%);
+
+    --card-face: #f0eee9;
+    --card-border: #5c6368;
+    --card-back: #2d7a5e;
+    --card-back-line: rgb(255 255 255 / 26%);
+    --diagram-arrow: #8c948f;
+    --diagram-good: #57c39b;
+    --diagram-warn: #e0a463;
+    --diagram-good-bg: #1b2e27;
+    --diagram-warn-bg: #2f2619;
   }
 }
 
@@ -606,6 +640,40 @@ tbody tr:hover { background: var(--surface-2); }
 
 /* Suit pips carry meaning in value tables, so colour them there only. */
 .section table { font-variant-numeric: tabular-nums; }
+
+/* ---------- Diagrams ---------- */
+
+.diagram { margin: 0 0 1.5rem; }
+
+/* Diagrams keep their natural size and scroll on narrow screens rather than
+   scaling down: squeezing a 470px diagram into 330px makes its labels
+   illegible, which defeats the point of having one. */
+.diagram__frame {
+  padding: 1.35rem 1rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow-x: auto;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* margin-inline centres it when it fits; flex centring would clip the left
+   edge once the frame starts scrolling. */
+.diagram svg {
+  display: block;
+  margin-inline: auto;
+  height: auto;
+  font-family: var(--font);
+}
+
+.diagram figcaption {
+  margin-top: 0.65rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+  text-align: center;
+}
 
 /* ---------- Callouts & examples ---------- */
 

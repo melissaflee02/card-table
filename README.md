@@ -61,6 +61,7 @@ Section bodies are arrays of typed blocks rather than HTML strings:
 | `table` | `{ type: 'table', headers: [], rows: [[]] }` — first cell of each row becomes a row header |
 | `callout` | `{ type: 'callout', variant: 'tip' \| 'warning' \| 'note', text, label? }` |
 | `example` | `{ type: 'example', text, label? }` |
+| `diagram` | `{ type: 'diagram', id, caption? }` — see below |
 
 `text` and list items support `**bold**`, `*italic*` and `` `code` ``. Everything
 is HTML-escaped first, so rules text can contain `<`, `>` and `&` safely.
@@ -71,6 +72,45 @@ is HTML-escaped first, so rules text can contain `<`, `>` and `&` safely.
   you do not want cluttering the filter chips.
 - `scoring: null` means no score tracker is rendered and `scorer.js` is not
   loaded (Palace works this way).
+
+## Diagrams
+
+`src/templates/diagram.js` holds hand-built inline SVG diagrams, referenced from
+game data by id:
+
+```js
+{ type: 'diagram', id: 'cambio-peek', caption: 'The two cards nearest you…' }
+```
+
+Current ids: `cambio-peek`, `palace-layers`, `gin-melds`, `gin-knock`,
+`hearts-passing`, `president-exchange`. An unknown id fails the build and lists
+the valid ones.
+
+These are deliberately **not** one-per-section. A diagram earns its place only
+where prose makes a reader assemble a picture in their head — a card layout, a
+rotation, who-hands-what-to-whom. Everything else is better as text.
+
+Notes for adding one:
+
+- Build from the `cardFace` / `cardBack` / `card` primitives so cards look the
+  same everywhere. `card(x, y, '7♠', pid)` is face up; `card(x, y, '?', pid)` is
+  face down.
+- Card faces stay light in **both** themes. A playing card is white, and
+  inverting it in dark mode reads as a rendering bug — so `INK` and `RED` are
+  fixed values, not themed ones.
+- Cards carry a corner index *and* a centre pip, which is what makes overlapped
+  groups (`gin-knock`) still readable.
+- Size each group by its longest **caption**, not just by its cards. Centred
+  text is usually the widest thing in a diagram; `svg()` adds horizontal
+  padding, but that only absorbs a few px of font-rendering variance.
+- Diagrams keep natural size and scroll on narrow screens rather than scaling
+  down, since shrinking one makes its labels illegible.
+- Print hides them: a game page prints as a one-page cheat sheet.
+
+To check geometry after a change, render each diagram and compare the root
+`svg.getBBox()` against its `viewBox` — that call *is* transform-aware, whereas
+`getBBox()` on an individual element ignores ancestor transforms and will report
+nonsense for anything inside a translated group.
 
 ## Score tracker
 

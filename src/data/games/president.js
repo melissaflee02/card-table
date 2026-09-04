@@ -104,6 +104,12 @@ export default {
           ],
         },
         {
+          type: 'diagram',
+          id: 'president-exchange',
+          caption:
+            'Solid arrows are forced — the loser must hand over their genuinely best cards. Dashed arrows are free choice, which is why the President usually sends back rubbish.',
+        },
+        {
           type: 'callout',
           variant: 'warning',
           text: 'The Scum has no choice about which cards to give — it must genuinely be their highest. The President chooses freely what to give back. That asymmetry is the entire engine of the game, and it makes climbing out of Scum genuinely hard.',

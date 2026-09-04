@@ -29,6 +29,12 @@ export default {
           ],
         },
         {
+          type: 'diagram',
+          id: 'cambio-peek',
+          caption:
+            'The two cards nearest you are the only ones you ever see for free. Look once, turn them back over, and everything after that is memory.',
+        },
+        {
           type: 'callout',
           variant: 'warning',
           label: 'The one-hand rule',

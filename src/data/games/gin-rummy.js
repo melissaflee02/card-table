@@ -47,6 +47,11 @@ export default {
           ],
         },
         {
+          type: 'diagram',
+          id: 'gin-melds',
+          caption: 'Those are the only two shapes that count. Everything else in your hand is deadwood.',
+        },
+        {
           type: 'callout',
           variant: 'warning',
           text: 'The Ace is **low only**. `A♠ 2♠ 3♠` is a run; `Q♠ K♠ A♠` is not. This trips up almost every new player once.',
@@ -106,6 +111,12 @@ export default {
         {
           type: 'p',
           text: 'When your **deadwood totals 10 points or less**, you may end the hand. Discard face down and knock on the table. Then lay out your melds and your deadwood for both to see.',
+        },
+        {
+          type: 'diagram',
+          id: 'gin-knock',
+          caption:
+            'Ten cards: a run, a set, and four unmatched cards adding up to exactly 10. Cards inside a meld are worth nothing — only the leftovers count against you.',
         },
         {
           type: 'ul',

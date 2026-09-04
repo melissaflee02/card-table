@@ -2,12 +2,10 @@
 // Keeping rules content as data (not HTML strings) means every game page
 // gets identical markup and styling for free.
 
-export const esc = (s) =>
-  String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+import { esc } from './escape.js';
+import { renderDiagram } from './diagram.js';
+
+export { esc };
 
 // Minimal inline markup so rules text can emphasise a card or a keyword
 // without hand-writing tags: **bold**, *italic*, `code`.
@@ -52,6 +50,8 @@ const renderers = {
         <p>${inline(b.text)}</p>
       </aside>`;
   },
+
+  diagram: (b) => renderDiagram(b.id, b.caption),
 
   example: (b) => `
     <figure class="example">
