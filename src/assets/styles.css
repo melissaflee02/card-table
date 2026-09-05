@@ -223,13 +223,20 @@ code {
 .game-grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr));
   gap: var(--hair); list-style: none; margin: 0; padding: 0;
-  background: var(--border-strong); border: var(--hair) solid var(--border-strong);
 }
 
 .game-card {
   position: relative; display: flex; flex-direction: column; height: 100%;
   padding: 1rem; background: var(--surface); color: var(--text); text-decoration: none;
   overflow: hidden;
+  /* Each cell draws its own 1px ring rather than the grid painting a
+     background that shows through the gaps. auto-fill keeps empty tracks, so a
+     container background rendered as a solid block wherever a row was only
+     partly filled — visible when filtering, and on the last row of the
+     unfiltered grid. box-shadow is used over outline so it cannot be replaced
+     by the :focus-visible ring, and over border so it stays out of layout:
+     adjacent rings overlap inside the 1px gap and read as a single rule. */
+  box-shadow: 0 0 0 var(--hair) var(--border-strong);
 }
 .game-card:hover { background: var(--surface-2); color: var(--text); }
 .game-card:hover .game-card__name { color: var(--accent-on-soft); text-decoration: underline; }
@@ -275,13 +282,18 @@ code {
 .aliases { margin: 0 0 .6rem; font-size: .6875rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; }
 .game__tagline { font-size: .9375rem; color: var(--text-muted); margin-bottom: 1rem; max-width: 62ch; }
 
-/* Key/value table, hard-ruled. */
+/* Key/value table, hard-ruled. Same per-cell ring as .game-grid: four items
+   across three columns leaves two empty cells in the final row, and a
+   container background would paint those as a solid block. auto-fit collapses
+   unused tracks but does nothing for a partly-filled last row. */
 .stats {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
   gap: var(--hair); margin: 0;
-  background: var(--border-strong); border: var(--hair) solid var(--border-strong);
 }
-.stats__item { padding: .5rem .65rem; background: var(--surface); }
+.stats__item {
+  padding: .5rem .65rem; background: var(--surface);
+  box-shadow: 0 0 0 var(--hair) var(--border-strong);
+}
 .stats dt { font-size: .625rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; color: var(--text-muted); }
 .stats dd { margin: .1rem 0 0; font-size: .8125rem; }
 
