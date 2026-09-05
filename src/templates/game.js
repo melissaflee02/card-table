@@ -1,5 +1,6 @@
 import { layout } from './layout.js';
 import { renderBlocks, esc } from './blocks.js';
+import { cardLibrary, drills, progressRing } from './components.js';
 
 export const playerLabel = (p) =>
   p.min === p.max ? `${p.min} players` : `${p.min}–${p.max} players`;
@@ -139,6 +140,8 @@ export function gamePage(game, { prev, next }) {
     { id: 'objective', title: 'Objective' },
     ...game.sections.map((s) => ({ id: s.id, title: s.navTitle || s.title })),
   ];
+  if (game.cardLibrary?.entries?.length) navEntries.push({ id: 'card-library', title: 'Card library' });
+  if (game.drills?.length) navEntries.push({ id: 'try-it', title: 'Try it' });
   if (game.variations?.length) navEntries.push({ id: 'house-rules', title: 'House rules' });
   if (game.hints?.length) navEntries.push({ id: 'hints', title: 'Hints' });
   if (game.faq?.length) navEntries.push({ id: 'faq', title: 'FAQ' });
@@ -155,6 +158,7 @@ export function gamePage(game, { prev, next }) {
         ? `<p class="aliases">Also called ${game.aliases.map((a) => `<span>${esc(a)}</span>`).join(', ')}</p>`
         : ''}
       <p class="game__tagline">${esc(game.tagline)}</p>
+      ${game.drills?.length ? `<p class="game__progress">${progressRing(game.slug, game.drills.length, { size: 'sm' })}<span>drills completed</span></p>` : ''}
       ${statsRow(game)}
     </header>
   </div>
@@ -177,6 +181,8 @@ export function gamePage(game, { prev, next }) {
       )
       .join('\n')}
 
+    ${cardLibrary(game)}
+    ${drills(game)}
     ${variationsBlock(game)}
     ${hintsBlock(game)}
     ${faqBlock(game)}
@@ -196,6 +202,12 @@ export function gamePage(game, { prev, next }) {
     body,
     base: '../',
     bodyClass: 'page-game',
-    scripts: game.scoring ? ['page.js', 'scorer.js'] : ['page.js'],
+    scripts: [
+      'page.js',
+      ...(game.cardLibrary?.entries?.length ? ['cardlib.js'] : []),
+      // progress.js first: drills.js reads the store it defines.
+      ...(game.drills?.length ? ['progress.js', 'drills.js'] : []),
+      ...(game.scoring ? ['scorer.js'] : []),
+    ],
   });
 }

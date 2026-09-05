@@ -1,6 +1,7 @@
 import { layout, SITE } from './layout.js';
 import { esc } from './blocks.js';
 import { playerLabel, timeLabel } from './game.js';
+import { progressRing } from './components.js';
 
 // Bucket on the *typical* length (midpoint of the range), not the worst case.
 // Bucketing on time.max put every game in medium-or-longer and left the
@@ -73,6 +74,7 @@ function gameCard(game) {
       <h3 class="game-card__name">${esc(game.name)}</h3>
       ${game.aliases?.length ? `<p class="game-card__aka">aka ${esc(game.aliases.slice(0, 2).join(', '))}</p>` : ''}
       <p class="game-card__tagline">${esc(game.tagline)}</p>
+      ${game.drills?.length ? progressRing(game.slug, game.drills.length, { size: 'sm' }) : ''}
       <span class="game-card__meta">
         <span class="pill">${esc(playerLabel(game.players))}</span>
         <span class="pill">${esc(timeLabel(game.time))}</span>
@@ -149,6 +151,6 @@ export function homePage(games, planned) {
     body,
     base: '',
     bodyClass: 'page-home',
-    scripts: ['filter.js'],
+    scripts: ['filter.js', 'progress.js'],
   });
 }

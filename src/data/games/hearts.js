@@ -222,6 +222,46 @@ export default {
     },
   ],
 
+  cardLibrary: {
+    intro: 'Only two things score, and you are trying to avoid both of them.',
+    entries: [
+      { rank: 'Q', suit: '♠', name: 'Queen of Spades', value: '13', effect: 'The card the whole game is about.', tags: ['penalty'] },
+      { rank: 'A', suit: '♥', name: 'Any heart', value: '1', effect: 'One point each. Thirteen of them in the deck.', tags: ['penalty'] },
+      { rank: '2', suit: '♣', name: 'Two of Clubs', value: '0', effect: 'Always leads the first trick.', tags: ['special'] },
+      { rank: 'J', suit: '♦', name: 'Jack of Diamonds', value: '−10', effect: 'Worth minus ten — but only in the Omnibus variant.', tags: ['variant'] },
+      { rank: '—', name: 'Everything else', value: '0', effect: 'Harmless. Spades other than the Queen included.', tags: ['scoring'] },
+    ],
+  },
+
+  drills: [
+    {
+      id: 'trick',
+      title: 'Who takes the trick?',
+      prompt: 'North led 7♣. These three follow. Which card wins the trick?',
+      options: [
+        { faces: ['K♣'], correct: true },
+        { faces: ['A♥'] },
+        { faces: ['2♣'] },
+        { faces: ['7♣'] },
+      ],
+      correctText: 'Highest card of the suit that was led. The Ace of Hearts is higher, but hearts were not led — it cannot win.',
+      wrongText: 'There is no trump in Hearts. Only clubs can win a trick led with clubs, so the highest club takes it.',
+    },
+    {
+      id: 'penalty',
+      title: 'Spot the expensive one',
+      prompt: 'Which of these costs you 13 points if you take it?',
+      options: [
+        { faces: ['Q♠'], correct: true },
+        { faces: ['Q♥'] },
+        { faces: ['K♠'] },
+        { faces: ['A♠'] },
+      ],
+      correctText: 'The Queen of Spades alone is 13. Every other spade is harmless.',
+      wrongText: 'Spades are only dangerous because of one card. The K♠ and A♠ score nothing; Q♥ is a heart, worth 1.',
+    },
+  ],
+
   cheatSheet: {
     setup: 'Four players, **13 cards each**, full 52-card deck. Aces high, no trump. Pass **three cards**: left, right, across, then hold — repeating.',
     turn: [

@@ -220,6 +220,46 @@ export default {
     },
   ],
 
+  cardLibrary: {
+    intro: 'Ranking runs 2 at the top down to 3 at the bottom. Suits are irrelevant — only rank and how many cards you play.',
+    entries: [
+      { rank: '2', name: 'Two', value: 'highest', effect: 'The strongest single card in the deck, above the Ace.', tags: ['ranking'] },
+      { rank: 'A', name: 'Ace', value: 'high', effect: 'Beaten only by a 2.', tags: ['ranking'] },
+      { rank: 'K', name: 'King', value: 'high', effect: 'Strong, but a pair of 4s still stops a single King.', tags: ['ranking'] },
+      { rank: '4–10', name: 'Middle cards', value: 'mid', effect: 'Worth more as pairs and triples than as singles.', tags: ['ranking'] },
+      { rank: '3', name: 'Three', value: 'lowest', effect: 'The worst card in the deck.', tags: ['ranking'] },
+    ],
+  },
+
+  drills: [
+    {
+      id: 'beat',
+      title: 'Match the count',
+      prompt: 'A pair of 6s is on the pile. Which of these beats it?',
+      options: [
+        { faces: ['7♣', '7♦'], correct: true },
+        { faces: ['K♠'] },
+        { faces: ['4♣', '4♦'] },
+        { faces: ['6♦'] },
+      ],
+      correctText: 'Same number of cards, higher rank. A pair can only be beaten by a higher pair.',
+      wrongText: 'Count first, rank second. A King is the second-highest card in the deck and still cannot touch a pair.',
+    },
+    {
+      id: 'highest',
+      title: 'Know the top card',
+      prompt: 'Which of these is the highest single card you can play?',
+      options: [
+        { faces: ['2♥'], correct: true },
+        { faces: ['A♠'] },
+        { faces: ['K♦'] },
+        { faces: ['3♣'] },
+      ],
+      correctText: 'The 2 sits above the Ace. The 3 is the lowest card, not the second-lowest.',
+      wrongText: 'This catches everyone coming from Hearts or Rummy: in President the **2 is the highest** card and the 3 is the lowest.',
+    },
+  ],
+
   cheatSheet: {
     setup: 'Deal the **whole deck** clockwise; uneven hands are fine. Ranking **2 A K Q J 10 … 4 3**, suits irrelevant. First hand: **3♣** leads. Later hands: the **President** leads.',
     turn: [

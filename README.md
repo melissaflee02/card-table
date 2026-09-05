@@ -75,26 +75,42 @@ is HTML-escaped first, so rules text can contain `<`, `>` and `&` safely.
 
 ## Design language
 
-The site is styled as a **technical manual**: monospace throughout, zero border
-radius, hard 1px rules, inverted heading blocks, key/value tables. Density and
-borders do the work that whitespace and shadows do in a softer design.
+Clean modern indie / rogue-lite. Parchment page, **dark slate panels**, one
+vibrant accent, tactile surfaces: rounded corners (`--radius: 12px`), soft drop
+shadows, cards that lift on hover.
 
-Two colours carry meaning, and the split is deliberate:
+Type is **Plus Jakarta Sans**, self-hosted from `src/assets/fonts/` (variable
+400–800, latin + latin-ext, ~49KB, OFL). No CDN and no Google Fonts request, so
+the site still makes zero third-party calls.
 
-- **Black** is structure — section headings, table heads, the site header.
-- **The ink** is state and interaction — links, the active nav item, buttons,
-  checked filters, the winning card in a diagram.
+The accent is reserved: CTAs, active states and success. It splits by role
+because a vibrant colour is too light to be link text —
 
-If you add a component, follow that split. An accent-coloured section heading
-would read as a link.
+| Token | Job |
+|---|---|
+| `accent` | Link and icon text |
+| `accentSoft` / `accentOnSoft` | Tinted background, and text on it |
+| `accentSolid` / `accentOnSolid` | Buttons, active nav, success — and text on those |
+| `panel` / `panelText` / `panelMuted` | The dark slate surfaces |
 
-Two things the monospace stack forces, both easy to trip over:
+## Components
 
-- Mono runs ~20% wider per character, so `--wrap-article` is 44rem rather than
-  52rem to keep lines near 75 characters.
-- Diagram labels inherit `--font`, so switching fonts changes SVG label widths
-  and can push text outside its `viewBox`. Re-run the geometry check below
-  after any font change — it caught four clipped diagrams on this one.
+- **Card library** (`cardLibrary` in game data) — a searchable, tag-filterable
+  grid of that game's card values and powers, so a reader can look one up
+  without leaving the tutorial. Filtering is client-side over `data-*`
+  attributes; the list is never duplicated in JS.
+- **Try It drills** (`drills` in game data) — click-a-card exercises on the
+  rules people get wrong. One correct option each; a wrong pick disables that
+  option and explains why, a right one completes the drill. The correct answer
+  is a `data-correct` attribute, so it is visible in devtools — fine for a
+  tutorial, not if these ever become scored.
+- **Progress rings** — an SVG ring per game, filled from drill completions in
+  `localStorage` (`drills:<slug>`). Shown on each homepage card and in the game
+  header. `progress.js` must load before `drills.js`; `game.js` orders them.
+
+Adding a drill: give it a unique `id`, a `prompt`, exactly one option with
+`correct: true`, and both `correctText` and `wrongText`. The build enforces all
+of that and fails with the specific problem.
 
 ## Changing the colour scheme
 

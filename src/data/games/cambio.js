@@ -250,6 +250,52 @@ export default {
     },
   ],
 
+  cardLibrary: {
+    intro: 'Everything scores at face value except the cards worth memorising. Powers only fire when a card is discarded.',
+    entries: [
+      { rank: 'JK', name: 'Joker', value: '0', effect: 'Free. The best card you can hold.', tags: ['scoring'] },
+      { rank: 'K', suit: '♥', name: 'Red King', value: '−1', effect: 'Worth minus one. Hearts and diamonds only.', tags: ['scoring'] },
+      { rank: 'A', name: 'Ace', value: '1', effect: 'Almost free.', tags: ['scoring'] },
+      { rank: '2–6', name: 'Low numbers', value: 'face', effect: 'Scored at face value. No power.', tags: ['scoring'] },
+      { rank: '7', name: 'Seven', value: '7', effect: 'Peek at one of your own face-down cards.', tags: ['power'] },
+      { rank: '8', name: 'Eight', value: '8', effect: 'Peek at one of your own face-down cards.', tags: ['power'] },
+      { rank: '9', name: 'Nine', value: '9', effect: 'Spy on one of another player’s cards.', tags: ['power'] },
+      { rank: '10', name: 'Ten', value: '10', effect: 'Spy on one of another player’s cards.', tags: ['power'] },
+      { rank: 'J', name: 'Jack', value: '10', effect: 'Blind switch: swap a card with an opponent, sight unseen.', tags: ['power'] },
+      { rank: 'Q', name: 'Queen', value: '10', effect: 'Blind switch: swap a card with an opponent, sight unseen.', tags: ['power'] },
+      { rank: 'K', suit: '♠', name: 'Black King', value: '10', effect: 'Look at one of yours and one of theirs, then choose to swap.', tags: ['power'] },
+    ],
+  },
+
+  drills: [
+    {
+      id: 'stick',
+      title: 'Stick the right card',
+      prompt: 'The discard pile shows 8♦ and you know every card in your grid. Which one can you slap down?',
+      options: [
+        { faces: ['8♣'], correct: true },
+        { faces: ['5♠'] },
+        { faces: ['K♥'] },
+        { faces: ['3♦'] },
+      ],
+      correctText: 'Rank is all that matters — 8 on 8. That card leaves your grid for good.',
+      wrongText: 'Sticking needs a matching **rank**, not a matching colour or value. Only the 8 matches the 8♦.',
+    },
+    {
+      id: 'spy',
+      title: 'Pick the right power',
+      prompt: 'You want to see one of your opponent’s face-down cards. Which card do you discard?',
+      options: [
+        { faces: ['9♦'], correct: true },
+        { faces: ['7♣'] },
+        { faces: ['J♠'] },
+        { faces: ['4♥'] },
+      ],
+      correctText: '9 and 10 spy on somebody else. 7 and 8 only peek at your own.',
+      wrongText: 'Close. 7 and 8 peek at **your own** cards; 9 and 10 are the ones that look at an opponent’s.',
+    },
+  ],
+
   cheatSheet: {
     setup: 'Four cards face down each in a 2×2 grid. Peek at your **two nearest cards once**. Flip one card to start the discard pile. One hand only, all round.',
     turn: [

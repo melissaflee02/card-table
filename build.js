@@ -44,6 +44,38 @@ function validate(game, index) {
   if (game.scoring && !['low', 'high'].includes(game.scoring.mode)) {
     throw new Error(`${where}: scoring.mode must be "low" or "high"`);
   }
+  if (game.cardLibrary) {
+    if (!game.cardLibrary.intro || !Array.isArray(game.cardLibrary.entries)) {
+      throw new Error(`${where}: cardLibrary needs intro and entries[]`);
+    }
+    for (const e of game.cardLibrary.entries) {
+      if (!e.rank || !e.name || !e.value || !e.effect) {
+        throw new Error(`${where}: every cardLibrary entry needs rank, name, value and effect`);
+      }
+    }
+  }
+  if (game.drills) {
+    const ids = new Set();
+    for (const d of game.drills) {
+      if (!d.id || !d.title || !d.prompt || !d.correctText || !d.wrongText) {
+        throw new Error(`${where}: every drill needs id, title, prompt, correctText and wrongText`);
+      }
+      if (ids.has(d.id)) throw new Error(`${where}: duplicate drill id "${d.id}"`);
+      ids.add(d.id);
+      if (!Array.isArray(d.options) || d.options.length < 2) {
+        throw new Error(`${where}: drill "${d.id}" needs at least two options`);
+      }
+      const correct = d.options.filter((o) => o.correct);
+      if (correct.length !== 1) {
+        throw new Error(`${where}: drill "${d.id}" needs exactly one correct option, found ${correct.length}`);
+      }
+      for (const o of d.options) {
+        if (!Array.isArray(o.faces) || !o.faces.length) {
+          throw new Error(`${where}: drill "${d.id}" has an option with no faces[]`);
+        }
+      }
+    }
+  }
   if (game.cheatSheet) {
     const cs = game.cheatSheet;
     if (!cs.setup || !Array.isArray(cs.turn) || !Array.isArray(cs.keyRules) || !cs.scoring) {
@@ -53,12 +85,17 @@ function validate(game, index) {
 }
 
 async function copyAssets() {
-  const from = join(root, 'src', 'assets');
-  const to = join(dist, 'assets');
-  await mkdir(to, { recursive: true });
-  for (const file of await readdir(from)) {
-    await copyFile(join(from, file), join(to, file));
-  }
+  // Recursive: src/assets now contains a fonts/ directory.
+  const walk = async (from, to) => {
+    await mkdir(to, { recursive: true });
+    for (const entry of await readdir(from, { withFileTypes: true })) {
+      const src = join(from, entry.name);
+      const dst = join(to, entry.name);
+      if (entry.isDirectory()) await walk(src, dst);
+      else await copyFile(src, dst);
+    }
+  };
+  await walk(join(root, 'src', 'assets'), join(dist, 'assets'));
 }
 
 async function build() {

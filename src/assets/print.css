@@ -51,8 +51,19 @@
   --diagram-good-bg: #f0f0f0;
   --diagram-warn-bg: #f0f0f0;
 
+  /* The cheat sheet is a dark slate panel on screen; on paper it must be
+     white, or it prints as a solid block of toner. */
+  --panel: #ffffff;
+  --panel-text: #000000;
+  --panel-muted: #333333;
+  --panel-border: #999999;
+
+  --danger-bg: #f5f5f5;
+  --danger-border: #999999;
+
   --shadow-sm: none;
   --shadow-md: none;
+  --shadow-lg: none;
 }
 
 body {

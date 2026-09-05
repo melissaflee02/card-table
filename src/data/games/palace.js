@@ -224,6 +224,47 @@ export default {
     },
   ],
 
+  cardLibrary: {
+    intro: 'Ranking runs 2, A, K, Q, J, 10 … 4, 3. Suits never matter. Four ranks break the rules entirely.',
+    entries: [
+      { rank: '2', name: 'Two', value: 'wild', effect: 'Playable on anything, and anything can be played on it.', tags: ['magic'] },
+      { rank: '10', name: 'Ten', value: 'burn', effect: 'Playable on anything. Burns the pile, then you play again.', tags: ['magic'] },
+      { rank: 'A', name: 'Ace', value: 'high', effect: 'Second only to the 2.', tags: ['ranking'] },
+      { rank: 'K', name: 'King', value: 'high', effect: 'Beaten only by an Ace or a 2.', tags: ['ranking'] },
+      { rank: '4–9', name: 'Middle cards', value: 'mid', effect: 'Ordinary. Must equal or beat the top of the pile.', tags: ['ranking'] },
+      { rank: '3', name: 'Three', value: 'low', effect: 'The worst card in the deck. Lowest 3 showing starts the game.', tags: ['ranking'] },
+    ],
+  },
+
+  drills: [
+    {
+      id: 'legal',
+      title: 'Find the dead card',
+      prompt: 'The pile shows 9♠. Three of these are legal plays. Which one is not?',
+      options: [
+        { faces: ['7♦'], correct: true },
+        { faces: ['9♥'] },
+        { faces: ['10♣'] },
+        { faces: ['2♠'] },
+      ],
+      correctText: 'A 7 is lower than a 9 and has no power, so it cannot go down. You would pick up the pile.',
+      wrongText: 'Equal counts: 9♥ matches. The 10 burns, and the 2 plays on anything. Only a plain lower card is stuck.',
+    },
+    {
+      id: 'burn',
+      title: 'Burn it down',
+      prompt: 'Which single card clears the whole pile out of the game on its own?',
+      options: [
+        { faces: ['10♣'], correct: true },
+        { faces: ['2♥'] },
+        { faces: ['A♠'] },
+        { faces: ['3♦'] },
+      ],
+      correctText: 'The 10 burns the pile and hands you another turn with a free choice.',
+      wrongText: 'The 2 resets the pile to the bottom but leaves it there. Only a 10 — or a completed four of a kind — burns it.',
+    },
+  ],
+
   cheatSheet: {
     setup: 'Nine cards each: **3 face down**, **3 face up** on top of them, **3 in hand**. Swap between hand and face-up row before play. Rest of the deck is the draw pile. Lowest 3 showing starts.',
     turn: [

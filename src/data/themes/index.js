@@ -1,19 +1,13 @@
 import { contrastRatio } from '../../lib/contrast.js';
-import defaultTheme from './default.js';
-import slate from './slate.js';
-import warm from './warm.js';
-import radixLime from './radix-lime.js';
-import inkBlue from './ink-blue.js';
-import inkOrange from './ink-orange.js';
-import inkMagenta from './ink-magenta.js';
+import indieGreen from './indie-green.js';
+import indieBlue from './indie-blue.js';
 
-export const THEMES = { default: defaultTheme, slate, warm, 'radix-lime': radixLime,
-  'ink-blue': inkBlue, 'ink-orange': inkOrange, 'ink-magenta': inkMagenta };
+export const THEMES = { 'indie-green': indieGreen, 'indie-blue': indieBlue };
 
 // ---------------------------------------------------------------------------
 // Change this one line to reskin the whole site, then `npm run build`.
 // ---------------------------------------------------------------------------
-export const ACTIVE = 'ink-blue';
+export const ACTIVE = 'indie-green';
 
 // Card faces are deliberately near-white in both themes and the ink on them is
 // fixed, because a playing card is white — inverting one in dark mode reads as
@@ -25,9 +19,14 @@ const HEX_KEYS = [
   'bg', 'surface', 'surface2', 'border', 'borderStrong', 'text', 'textMuted',
   'inputBorder', 'accent', 'accentHover', 'accentSoft', 'accentOnSoft',
   'accentSolid', 'accentSolidHover', 'accentOnSolid', 'suitRed',
-  'warningBg', 'warningBorder', 'cardFace', 'cardBorder', 'cardBack',
+  'panel', 'panelText', 'panelMuted', 'panelBorder',
+  'warningBg', 'warningBorder', 'dangerBg', 'dangerBorder',
+  'cardFace', 'cardBorder', 'cardBack',
   'diagramArrow', 'diagramGood', 'diagramWarn', 'diagramGoodBg', 'diagramWarnBg',
 ];
+
+// Shadows are raw CSS, not colours, so they are emitted but not contrast-checked.
+const RAW_KEYS = ['shadowSm', 'shadowMd', 'shadowLg'];
 
 // Every pair here is real text on a real background somewhere on the site.
 // 4.5:1 is the WCAG AA threshold for body-size text.
@@ -51,6 +50,11 @@ const TEXT_PAIRS = [
   ['diagramWarn', 'surface2', 'diagram deadwood / "no" text'],
   ['text', 'diagramGoodBg', 'text in a green diagram box'],
   ['text', 'diagramWarnBg', 'text in an amber diagram box'],
+  ['panelText', 'panel', 'body text on a dark slate panel'],
+  ['panelMuted', 'panel', 'secondary text on a dark slate panel'],
+  ['accentSolid', 'panel', 'the accent used for type on a panel'],
+  ['suitRed', 'dangerBg', 'a wrong answer in a Try It drill'],
+  ['text', 'dangerBg', 'body text in a wrong-answer drill state'],
 ];
 
 // Graphical objects, not text. WCAG SC 1.4.11 sets the bar at 3:1 for these,
@@ -88,7 +92,7 @@ export function validateTheme(key) {
     const p = theme[mode];
     if (!p) { problems.push(`${mode}: missing entirely`); continue; }
 
-    for (const k of HEX_KEYS) {
+    for (const k of [...HEX_KEYS, ...RAW_KEYS]) {
       if (p[k] === undefined) problems.push(`${mode}.${k}: missing`);
     }
     for (const k of HEX_KEYS) {
@@ -129,7 +133,7 @@ export function validateTheme(key) {
 const kebab = (k) => '--' + k.replace(/([a-z])([A-Z0-9])/g, '$1-$2').toLowerCase();
 
 function tokens(palette, indent) {
-  const lines = HEX_KEYS.map(
+  const lines = [...HEX_KEYS, ...RAW_KEYS].map(
     (k) => `${indent}${kebab(k)}: ${palette[k]};`
   );
   // Aliases and derived values, so palettes only ever list real colours.

@@ -250,6 +250,46 @@ export default {
     },
   ],
 
+  cardLibrary: {
+    intro: 'Values only ever apply to deadwood — the cards left over that are not in a meld.',
+    entries: [
+      { rank: 'A', name: 'Ace', value: '1', effect: 'Low only. Runs as A-2-3, never Q-K-A.', tags: ['scoring'] },
+      { rank: '2–10', name: 'Number cards', value: 'face', effect: 'Worth their pip value as deadwood.', tags: ['scoring'] },
+      { rank: 'J', name: 'Jack', value: '10', effect: 'Ten points of deadwood if it is left unmatched.', tags: ['scoring'] },
+      { rank: 'Q', name: 'Queen', value: '10', effect: 'Ten points of deadwood if it is left unmatched.', tags: ['scoring'] },
+      { rank: 'K', name: 'King', value: '10', effect: 'Ten points of deadwood if it is left unmatched.', tags: ['scoring'] },
+    ],
+  },
+
+  drills: [
+    {
+      id: 'run',
+      title: 'Complete the run',
+      prompt: 'You are holding 5♣ and 6♣. Which card turns them into a meld?',
+      options: [
+        { faces: ['7♣'], correct: true },
+        { faces: ['7♥'] },
+        { faces: ['6♠'] },
+        { faces: ['4♦'] },
+      ],
+      correctText: '5♣ 6♣ 7♣ — three consecutive cards, all clubs. That is a run.',
+      wrongText: 'A run has to be **one suit**, consecutive. 7♥ is the right rank but the wrong suit; 6♠ just gives you a pair.',
+    },
+    {
+      id: 'deadwood',
+      title: 'Count the damage',
+      prompt: 'Which of these costs you the most if you are caught holding it?',
+      options: [
+        { faces: ['J♠'], correct: true },
+        { faces: ['9♦'] },
+        { faces: ['A♣'] },
+        { faces: ['3♥'] },
+      ],
+      correctText: 'Every face card is 10 points of deadwood. Ditch them early.',
+      wrongText: 'Face cards are all worth **10**, more than any number card. The 9♦ is only 9.',
+    },
+  ],
+
   cheatSheet: {
     setup: 'Ten cards each, no jokers. Stock face down, one card face up to start the discard pile. **Non-dealer** decides first whether to take the up-card.',
     turn: [
