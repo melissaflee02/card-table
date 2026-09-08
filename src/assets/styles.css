@@ -358,8 +358,13 @@ code {
 }
 .btn--primary { background: var(--accent-solid); color: var(--accent-on-solid); }
 .btn--primary:hover { background: var(--accent-solid-hover); color: var(--accent-on-solid); }
-.btn--quiet { background: transparent; color: var(--accent-solid); border-color: var(--accent-solid); }
-.btn--quiet:hover { background: var(--accent-soft); color: var(--accent-on-soft); border-color: var(--accent-solid); }
+/* --accent-solid is a *fill* colour — dark in both themes so light text can sit
+   on top of it. Using it as the label/outline of a ghost button put dark green
+   on the dark --surface-2 panel: 2.12:1 in dark mode. --accent-on-soft is the
+   token that flips with the theme (deep green on light, mint on dark), so it
+   stays legible on every surface a quiet button actually appears on. */
+.btn--quiet { background: transparent; color: var(--accent-on-soft); border-color: var(--accent-on-soft); }
+.btn--quiet:hover { background: var(--accent-soft); color: var(--accent-on-soft); border-color: var(--accent-on-soft); }
 .btn:active { transform: translateY(1px); }
 
 .link-btn { font: inherit; font-weight: 600; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; }

@@ -39,8 +39,13 @@ const TEXT_PAIRS = [
   ['accent', 'bg', 'links on the page'],
   ['accent', 'surface', 'links on a card'],
   ['accentOnSoft', 'accentSoft', 'hint numbers, tip label, tracker leader'],
+  // Ghost buttons (+ Player, Remove last round, Try again, Clear filters) draw
+  // their label and outline in accentOnSoft: on surface2 in the tracker, on
+  // dangerBg in an answered drill, on bg on the homepage.
+  ['accentOnSoft', 'dangerBg', 'the "Try again" button on a wrong drill answer'],
+  ['accentOnSoft', 'bg', 'the "Clear filters" button on the homepage'],
   ['accentOnSoft', 'surface', 'the [EASY] tag on a game card'],
-  ['accentOnSoft', 'surface2', 'hovered pager link, hovered game card, details markers'],
+  ['accentOnSoft', 'surface2', 'hovered pager/game card, details markers, ghost buttons'],
   ['text', 'accentSoft', 'objective box and score-tracker banner body text'],
   ['accentOnSolid', 'accentSolid', 'button text, cheat-sheet header, brand mark'],
   ['suitRed', 'warningBg', 'the "watch out" callout label'],
@@ -63,6 +68,9 @@ const GRAPHIC_PAIRS = [
   ['diagramArrow', 'surface2', 'diagram arrows and leader lines'],
   ['inputBorder', 'surface', 'search and score-tracker input borders'],
   ['inputBorder', 'bg', 'input borders against the page'],
+  // The ghost button's 1px outline. Its label is covered by TEXT_PAIRS above at
+  // the stricter 4.5:1, so only the surfaces not already listed there need a row.
+  ['accentOnSoft', 'surface2', 'quiet ghost-button outline on the tracker panel'],
 ];
 
 // Deliberately NOT checked, and why:

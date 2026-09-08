@@ -74,7 +74,7 @@ export default {
       body: [
         {
           type: 'p',
-          text: 'The player holding the **2♣** leads it — always, every hand. In a three-player game the 3♣ leads instead.',
+          text: 'The player holding the **2♣** leads it — always, every hand. In the five-player game the 2♣ has been removed, so the **3♣** leads instead.',
         },
         {
           type: 'ol',
@@ -206,7 +206,7 @@ export default {
     },
     {
       q: 'Who leads the first trick?',
-      a: 'Whoever holds the **2♣** after passing, and they must lead exactly that card. In a three-player game it is the 3♣, since the 2♣ has been removed.',
+      a: 'Whoever holds the **2♣** after passing, and they must lead exactly that card. The exception is the **five-player** game, where the 2♣ is removed from the deck — there the **3♣** leads.',
     },
     {
       q: 'What happens if two players tie for lowest?',

@@ -8,9 +8,15 @@ export const playerLabel = (p) =>
 export const timeLabel = (t) =>
   t.min === t.max ? `${t.min} min` : `${t.min}–${t.max} min`;
 
+const playerQualifier = (p) =>
+  p.note ? ` (${esc(p.note)})` : p.best ? ` (best with ${esc(p.best)})` : '';
+
 function statsRow(game) {
   const items = [
-    ['Players', playerLabel(game.players) + (game.players.best ? ` (best with ${esc(game.players.best)})` : '')],
+    // `best` is a recommended *count*; `note` is a format fact (e.g. "two
+    // partnerships") for games where the count is fixed and "best with 4" would
+    // just restate the 4 already shown. They are mutually exclusive in practice.
+    ['Players', playerLabel(game.players) + playerQualifier(game.players)],
     ['Time', timeLabel(game.time)],
     ['What you need', esc(deckLabel(game))],
     ['Difficulty', game.difficulty === 'easy' ? 'Easy to learn' : 'Some strategy'],

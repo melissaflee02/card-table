@@ -110,6 +110,33 @@ export function cardLibrary(game) {
   </section>`;
 }
 
+// Every drill is authored with the correct answer first, which is easy to read
+// in the data file and useless in the browser — you could score 18/18 by always
+// clicking the left-hand card. Shuffle at build time rather than at runtime so
+// the order survives with JS disabled and the emitted HTML stays byte-stable
+// (asset fingerprinting hashes this output, so a fresh random order every build
+// would churn the hashes). The seed is the game slug + drill id, so a given
+// drill always lands the same way but different drills land differently.
+function seededOrder(seed, length) {
+  let h = 2166136261;
+  for (let i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i);
+    h = Math.imul(h, 16777619) >>> 0;
+  }
+  const next = () => {
+    h ^= h << 13; h >>>= 0;
+    h ^= h >>> 17;
+    h ^= h << 5;  h >>>= 0;
+    return h / 4294967296;
+  };
+  const idx = Array.from({ length }, (_, i) => i);
+  for (let i = length - 1; i > 0; i--) {
+    const j = Math.floor(next() * (i + 1));
+    [idx[i], idx[j]] = [idx[j], idx[i]];
+  }
+  return idx;
+}
+
 export function drills(game) {
   if (!game.drills?.length) return '';
   const total = game.drills.length;
@@ -123,7 +150,7 @@ export function drills(game) {
       </header>
       <p class="drill__prompt">${esc(d.prompt)}</p>
       <ul class="drill__options">
-        ${d.options.map((o, n) => `<li>
+        ${seededOrder(`${game.slug}:${d.id}`, d.options.length).map((oi) => d.options[oi]).map((o, n) => `<li>
           <button class="drill__option" type="button"
                   data-drill-option${o.correct ? ' data-correct' : ''}
                   aria-label="Option ${n + 1}: ${esc(o.faces.map(cardLabel).join(' and '))}">

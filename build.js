@@ -39,6 +39,14 @@ function validate(game, index) {
     ids.add(s.id);
   }
   if (game.players.min > game.players.max) throw new Error(`${where}: players.min > players.max`);
+  // `best` restates a count, so on a fixed-count game it renders as the useless
+  // "4 players (best with 4)". Such games want `note` ("two partnerships").
+  if (game.players.best && game.players.min === game.players.max) {
+    throw new Error(`${where}: players.best on a fixed ${game.players.min}-player game — use players.note instead`);
+  }
+  if (game.players.best && game.players.note) {
+    throw new Error(`${where}: players has both best and note — pick one`);
+  }
   if (game.time.min > game.time.max) throw new Error(`${where}: time.min > time.max`);
   if (!['easy', 'medium'].includes(game.difficulty)) {
     throw new Error(`${where}: difficulty must be "easy" or "medium"`);

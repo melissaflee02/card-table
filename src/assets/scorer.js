@@ -201,9 +201,20 @@
     } else if (el.dataset.name !== undefined) {
       state.players[Number(el.dataset.name)] = el.value;
       save();
+      var i = Number(el.dataset.name);
       var headers = host.querySelectorAll('thead th');
-      var idx = Number(el.dataset.name) + 1;
-      if (headers[idx]) headers[idx].textContent = el.value;
+      if (headers[i + 1]) headers[i + 1].textContent = el.value;
+      // Renaming deliberately does not re-render — that would steal focus
+      // mid-typing — so patch the score cells' accessible names by hand.
+      // Without this a screen reader still announces "Round 1, Player 1"
+      // for a column the sighted user has already relabelled "Ana".
+      var cells = host.querySelectorAll('input[data-player="' + i + '"]');
+      for (var c = 0; c < cells.length; c++) {
+        cells[c].setAttribute(
+          'aria-label',
+          'Round ' + (Number(cells[c].dataset.round) + 1) + ', ' + el.value
+        );
+      }
     }
   });
 

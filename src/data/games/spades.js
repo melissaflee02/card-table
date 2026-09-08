@@ -4,7 +4,7 @@ export default {
   suit: '♠',
   aliases: ['Call Bridge'],
   tagline: 'Bid what you think you can take, then take exactly that. Greed is punished twice.',
-  players: { min: 4, max: 4, best: '4 (two partnerships)' },
+  players: { min: 4, max: 4, note: 'two partnerships' },
   time: { min: 30, max: 45 },
   difficulty: 'medium',
   deck: 'standard',
