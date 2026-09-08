@@ -40,6 +40,8 @@
 
   --card-face: #ffffff;
   --card-border: #999999;
+  --card-ink: #000000;
+  --card-ink-red: #8a1a12;
   --card-back: #333333;
   --card-back-line: rgb(255 255 255 / 30%);
 

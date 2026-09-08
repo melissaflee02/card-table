@@ -10,8 +10,9 @@ import { esc } from './escape.js';
 
 const CARD_W = 46;
 const CARD_H = 64;
-const INK = '#1b1a17';
-const RED = '#b3231a';
+// Resolved from the palette; see cardInk/cardInkRed in the theme files.
+const INK = 'var(--card-ink)';
+const RED = 'var(--card-ink-red)';
 
 const isRed = (suit) => suit === '♥' || suit === '♦';
 

@@ -38,6 +38,8 @@ export default {
 
     cardFace: '#fffdf7',
     cardBorder: '#c8bda4',
+    cardInk: '#1b1a17',
+    cardInkRed: '#b33a2f',
     cardBack: '#18362d',
 
     diagramArrow: '#8b8069',
@@ -84,6 +86,8 @@ export default {
 
     cardFace: '#f2eee2',
     cardBorder: '#5c6b61',
+    cardInk: '#1b1a17',
+    cardInkRed: '#b33a2f',
     cardBack: '#2f7d57',
 
     diagramArrow: '#8d978c',

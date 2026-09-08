@@ -144,7 +144,7 @@ code {
   border-radius: 5px;
   box-shadow: var(--shadow-sm);
 }
-.brandmark__pip { font-size: .95rem; line-height: 1; color: var(--text); }
+.brandmark__pip { font-size: .95rem; line-height: 1; color: var(--card-ink); }
 
 .site-nav { margin-left: auto; display: flex; gap: .35rem; align-items: center; }
 .site-nav a {
@@ -222,9 +222,11 @@ code {
   border: 1px solid var(--card-border);
   border-radius: 12px;
   box-shadow: var(--shadow-lg);
-  color: var(--text);
+  /* Card faces stay light in both themes, so the ink is a fixed token —
+     var(--text) would be light-on-light in dark mode. */
+  color: var(--card-ink);
 }
-.fan__card[data-tone="red"] { color: var(--suit-red); }
+.fan__card[data-tone="red"] { color: var(--card-ink-red); }
 .fan__card--1 { transform: translate(-50%, -50%) rotate(-15deg) translateX(-5.5rem); }
 .fan__card--2 { transform: translate(-50%, -52%) rotate(-1deg); }
 .fan__card--3 { transform: translate(-50%, -50%) rotate(14deg) translateX(5.5rem); }
@@ -543,12 +545,12 @@ p.callout { padding: 1rem 1.2rem; }
 .minicard {
   display: inline-grid; place-content: center; gap: .1rem;
   min-width: 2.6rem; padding: .4rem .35rem;
-  background: var(--card-face); color: #1b1a17;
+  background: var(--card-face); color: var(--card-ink);
   border: 1px solid var(--card-border); border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm); text-align: center; line-height: 1;
 }
 .minicard--wide { min-width: 3.4rem; }
-.minicard[data-tone="red"] { color: #b3231a; }
+.minicard[data-tone="red"] { color: var(--card-ink-red); }
 .minicard__rank { font-size: 1rem; font-weight: 800; }
 .minicard__suit { font-size: .8rem; font-style: normal; }
 

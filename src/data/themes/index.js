@@ -10,11 +10,9 @@ export const THEMES = { cardroom, 'indie-green': indieGreen, 'indie-blue': indie
 // ---------------------------------------------------------------------------
 export const ACTIVE = 'cardroom';
 
-// Card faces are deliberately near-white in both themes and the ink on them is
-// fixed, because a playing card is white — inverting one in dark mode reads as
-// a rendering bug. These must match diagram.js.
-const CARD_INK = '#1b1a17';
-const CARD_RED = '#b3231a';
+// Card faces are deliberately near-white in both themes, so the ink on them
+// is a token rather than following --text: in dark mode --text is light, and
+// a light pip on a light card face is invisible.
 
 const HEX_KEYS = [
   'bg', 'surface', 'surface2', 'border', 'borderStrong', 'text', 'textMuted',
@@ -22,7 +20,7 @@ const HEX_KEYS = [
   'accentSolid', 'accentSolidHover', 'accentOnSolid', 'suitRed',
   'panel', 'panelText', 'panelMuted', 'panelBorder', 'panelAccent',
   'warningBg', 'warningBorder', 'dangerBg', 'dangerBorder',
-  'cardFace', 'cardBorder', 'cardBack',
+  'cardFace', 'cardBorder', 'cardBack', 'cardInk', 'cardInkRed',
   'diagramArrow', 'diagramGood', 'diagramWarn', 'diagramGoodBg', 'diagramWarnBg',
 ];
 
@@ -114,7 +112,7 @@ export function validateTheme(key) {
       }
     }
     // Card faces carry fixed ink, so a dark cardFace would break every diagram.
-    for (const [ink, label] of [[CARD_INK, 'black pips'], [CARD_RED, 'red pips']]) {
+    for (const [ink, label] of [[p.cardInk, 'black pips'], [p.cardInkRed, 'red pips']]) {
       const r = contrastRatio(ink, p.cardFace);
       if (r < 4.5) problems.push(`${mode}: ${label} on cardFace is ${r}:1 (need 4.5) — cardFace must stay light`);
     }
