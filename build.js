@@ -2,7 +2,8 @@
 // Static site generator. Reads game data, renders templates, writes dist/.
 // Deliberately dependency-free so it runs on any Node >= 16.
 
-import { mkdir, rm, writeFile, readdir, copyFile } from 'node:fs/promises';
+import { mkdir, rm, writeFile, readFile, readdir, copyFile, rename } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -105,6 +106,47 @@ async function copyAssets() {
   await walk(join(root, 'src', 'assets'), join(dist, 'assets'));
 }
 
+/**
+ * Content-hash the CSS and JS, then rewrite the HTML to match.
+ *
+ * GitHub Pages serves assets with `cache-control: max-age=600` and offers no
+ * way to change that. Without hashed names, for ten minutes after every deploy
+ * a returning visitor gets new HTML with a stale stylesheet — which renders
+ * worse than either version alone. A hash in the filename makes every build a
+ * distinct URL, so there is no stale window.
+ *
+ * Fonts and images are deliberately left unhashed: fonts are referenced from
+ * inside the CSS by relative path, and the icons and OG card are fetched by
+ * external link-preview services that should keep hitting a stable URL.
+ */
+async function fingerprintAssets() {
+  const hashable = ['styles.css', 'theme.css', 'print.css', 'theme.js', 'page.js',
+    'filter.js', 'scorer.js', 'drills.js', 'cardlib.js', 'progress.js'];
+  const dir = join(dist, 'assets');
+  const present = new Set(await readdir(dir));
+  const map = new Map();
+
+  for (const name of hashable) {
+    if (!present.has(name)) continue;
+    const body = await readFile(join(dir, name));
+    const hash = createHash('sha256').update(body).digest('hex').slice(0, 8);
+    const dot = name.lastIndexOf('.');
+    const hashed = `${name.slice(0, dot)}.${hash}${name.slice(dot)}`;
+    await rename(join(dir, name), join(dir, hashed));
+    map.set(name, hashed);
+  }
+
+  const pages = ['index.html', '404.html',
+    ...(await readdir(join(dist, 'games'))).map((f) => join('games', f))];
+  for (const page of pages) {
+    const file = join(dist, page);
+    let html = await readFile(file, 'utf8');
+    for (const [from, to] of map) html = html.split(`assets/${from}`).join(`assets/${to}`);
+    await writeFile(file, html);
+  }
+  return map;
+}
+
 async function build() {
   const slugs = new Set();
   GAMES.forEach((g, i) => {
@@ -169,7 +211,10 @@ async function build() {
   // Throws with every failing contrast pair if the palette is inaccessible.
   await writeFile(join(dist, 'assets', 'theme.css'), themeCss(ACTIVE));
 
+  const fingerprinted = await fingerprintAssets();
+
   console.log(`Theme: ${THEMES[ACTIVE].name} (${ACTIVE})`);
+  console.log(`Fingerprinted ${fingerprinted.size} assets`);
   console.log(`Built ${GAMES.length} game page${GAMES.length === 1 ? '' : 's'} + homepage into dist/`);
   for (const g of GAMES) console.log(`  games/${g.slug}.html  ${g.name}`);
 }
