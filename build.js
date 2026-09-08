@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 import { GAMES, PLANNED } from './src/data/index.js';
 import { ACTIVE, THEMES, themeCss } from './src/data/themes/index.js';
+import { SITE, layout } from './src/templates/layout.js';
 import { homePage } from './src/templates/home.js';
 import { gamePage } from './src/templates/game.js';
 
@@ -129,6 +130,39 @@ async function build() {
     }
     await writeFile(join(dist, 'games', `${game.slug}.html`), html);
   }
+
+  // --- Crawler files -------------------------------------------------------
+  // Generated from GAMES so a new game is discoverable without a manual edit.
+  const today = new Date().toISOString().slice(0, 10);
+  const urls = [
+    { loc: `${SITE.origin}/`, priority: '1.0' },
+    ...GAMES.map((g) => ({ loc: `${SITE.origin}/games/${g.slug}.html`, priority: '0.8' })),
+  ];
+  await writeFile(join(dist, 'sitemap.xml'),
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    urls.map((u) =>
+      `  <url>\n    <loc>${u.loc}</loc>\n    <lastmod>${today}</lastmod>\n` +
+      `    <changefreq>monthly</changefreq>\n    <priority>${u.priority}</priority>\n  </url>`
+    ).join('\n') + `\n</urlset>\n`);
+
+  await writeFile(join(dist, 'robots.txt'),
+    `User-agent: *\nAllow: /\n\nSitemap: ${SITE.origin}/sitemap.xml\n`);
+
+  // GitHub Pages serves 404.html for unknown paths.
+  await writeFile(join(dist, '404.html'), layout({
+    title: 'Page not found',
+    description: 'That page does not exist. Browse all the card games instead.',
+    path: '404.html',
+    base: `${SITE.origin}/`,
+    bodyClass: 'page-home',
+    body: `<div class="wrap"><section class="hero"><div class="hero__copy">
+      <p class="hero__eyebrow">404</p>
+      <h1>That page isn’t here.</h1>
+      <p class="hero__sub">The rules you were after may have moved. Everything is one click away.</p>
+      <p><a class="btn btn--primary" href="${SITE.origin}/">Browse all games</a></p>
+    </div></section></div>`,
+  }));
 
   await copyAssets();
 

@@ -146,14 +146,29 @@ export function homePage(games, planned) {
       : ''}
 </div>`;
 
+  // Generated from the game list so it can never drift out of date the way a
+  // hardcoded "five games" string did.
+  const names = games.map((g) => g.name);
+  const shown = names.slice(0, 6).join(', ');
+  const rest = names.length > 6 ? ` and ${names.length - 6} more` : '';
+
   return layout({
-    title: '',
+    title: `How to Play ${names.length} Classic Card Games`,
     description:
-      'Clear, printable rules for popular card games: Cambio, Gin Rummy, Palace, Hearts, Spades and more. Setup, turn order, scoring, house rules and cheat sheets.',
+      `Clear, printable rules for ${names.length} classic card games: ${shown}${rest}. ` +
+      'Setup, turn order, scoring, house rules, practice drills and cheat sheets.',
     body,
     base: '',
+    path: '',
     bodyClass: 'page-home',
     page: 'home',
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: SITE.name,
+      url: `${SITE.origin}/`,
+      description: SITE.tagline,
+    },
     scripts: ['filter.js', 'progress.js'],
   });
 }

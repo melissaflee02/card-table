@@ -4,14 +4,23 @@ import { brandMark } from './components.js';
 export const SITE = {
   name: 'Card Table',
   tagline: 'Clear rules for the card games people actually play.',
+  // Canonical origin. Update if the site moves to its own domain — sitemap,
+  // canonical tags, Open Graph and JSON-LD all derive from this.
+  origin: 'https://melissaflee02.github.io/card-table',
+  locale: 'en_GB',
 };
 
 // Set the theme before first paint so a dark-mode user never sees a white flash.
 const THEME_BOOT = `(function(){try{var t=localStorage.getItem('theme');
 if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;}catch(e){}})();`;
 
-export function layout({ title, description, body, base = '', scripts = [], bodyClass = '', page = '' }) {
+export function layout({
+  title, description, body, base = '', scripts = [], bodyClass = '', page = '',
+  path = '', jsonLd = null,
+}) {
   const fullTitle = title ? `${title} — ${SITE.name}` : `${SITE.name} — ${SITE.tagline}`;
+  const canonical = `${SITE.origin}/${path}`.replace(/\/+$/, '/').replace(/([^:])\/\//g, '$1/');
+  const ogImage = `${SITE.origin}/assets/og-card.png`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,15 +28,32 @@ export function layout({ title, description, body, base = '', scripts = [], body
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(fullTitle)}</title>
 <meta name="description" content="${esc(description)}">
+<link rel="canonical" href="${esc(canonical)}">
+<meta property="og:site_name" content="${esc(SITE.name)}">
 <meta property="og:title" content="${esc(fullTitle)}">
 <meta property="og:description" content="${esc(description)}">
-<meta property="og:type" content="website">
+<meta property="og:type" content="${page === 'home' ? 'website' : 'article'}">
+<meta property="og:url" content="${esc(canonical)}">
+<meta property="og:locale" content="${SITE.locale}">
+<meta property="og:image" content="${esc(ogImage)}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(SITE.name)} — ${esc(SITE.tagline)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(fullTitle)}">
+<meta name="twitter:description" content="${esc(description)}">
+<meta name="twitter:image" content="${esc(ogImage)}">
 <meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#18362d" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f3eedf" media="(prefers-color-scheme: light)">
+<link rel="icon" href="${base}assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="${base}assets/apple-touch-icon.png">
+<link rel="preload" href="${base}assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${base}assets/theme.css">
 <link rel="stylesheet" href="${base}assets/styles.css">
 <link rel="stylesheet" href="${base}assets/print.css" media="print">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127183;</text></svg>">
 <script>${THEME_BOOT}</script>
+${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : ''}
 </head>
 <body${bodyClass ? ` class="${esc(bodyClass)}"` : ''}>
 <a class="skip-link" href="#main">Skip to content</a>

@@ -1,4 +1,4 @@
-import { layout } from './layout.js';
+import { layout, SITE } from './layout.js';
 import { renderBlocks, esc } from './blocks.js';
 import { cardLibrary, drills, progressRing, deckLabel, equipmentTier } from './components.js';
 
@@ -201,11 +201,43 @@ export function gamePage(game, { prev, next }) {
   </div>
 </article>`;
 
+  // Title mirrors how people actually search: "how to play <game>". Kept
+  // short so the useful half survives Google's ~60-character truncation.
+  const facets = game.scoring ? 'Rules, Setup & Scoring' : 'Rules & Setup';
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Game',
+        name: game.name,
+        alternateName: game.aliases?.length ? game.aliases : undefined,
+        description: game.objective,
+        url: `${SITE.origin}/games/${game.slug}.html`,
+        numberOfPlayers: {
+          '@type': 'QuantitativeValue',
+          minValue: game.players.min,
+          maxValue: game.players.max,
+        },
+        gameItem: { '@type': 'Thing', name: deckLabel(game) },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'All games', item: `${SITE.origin}/` },
+          { '@type': 'ListItem', position: 2, name: game.name },
+        ],
+      },
+    ],
+  };
+
   return layout({
-    title: `${game.name} rules`,
+    title: `How to Play ${game.name}: ${facets}`,
     description: `How to play ${game.name}${game.aliases?.length ? ` (also called ${game.aliases.join(', ')})` : ''}: setup, turn order, scoring, house rules and a printable cheat sheet. ${playerLabel(game.players)}, ${timeLabel(game.time)}.`,
     body,
     base: '../',
+    path: `games/${game.slug}.html`,
+    jsonLd,
     bodyClass: 'page-game',
     scripts: [
       'page.js',
