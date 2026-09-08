@@ -11,6 +11,23 @@ export const timeLabel = (t) =>
 const playerQualifier = (p) =>
   p.note ? ` (${esc(p.note)})` : p.best ? ` (best with ${esc(p.best)})` : '';
 
+// Google truncates around 160 characters, and the old template ran to 169 on
+// President while reading identically on all nine pages. Lead with the game's
+// own hook instead, then fit as many aliases as the budget allows — someone
+// searching "shithead" needs to see the word to know they are in the right
+// place. Descriptions are not a ranking factor, so this is purely about whether
+// the result is worth clicking.
+const META_LIMIT = 158;
+export function metaDescription(game) {
+  const tail = 'Rules, setup, scoring and a printable cheat sheet.';
+  const plain = `${game.tagline} ${tail}`;
+  for (let n = game.aliases?.length ?? 0; n > 0; n--) {
+    const withAliases = `${game.tagline} Also called ${game.aliases.slice(0, n).join(', ')}. ${tail}`;
+    if (withAliases.length <= META_LIMIT) return withAliases;
+  }
+  return plain;
+}
+
 function statsRow(game) {
   const items = [
     // `best` is a recommended *count*; `note` is a format fact (e.g. "two
@@ -244,7 +261,7 @@ export function gamePage(game, { prev, next }) {
 
   return layout({
     title: `How to Play ${game.name}: ${facets}`,
-    description: `How to play ${game.name}${game.aliases?.length ? ` (also called ${game.aliases.join(', ')})` : ''}: setup, turn order, scoring, house rules and a printable cheat sheet. ${playerLabel(game.players)}, ${timeLabel(game.time)}.`,
+    description: metaDescription(game),
     body,
     base: '../',
     ogImage: `assets/og/${game.slug}.png`,

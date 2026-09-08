@@ -154,9 +154,11 @@ export function homePage(games, planned) {
 
   return layout({
     title: `How to Play ${names.length} Classic Card Games`,
+    // Kept under ~158 characters so Google shows it whole rather than cutting
+    // mid-list. The game names earn their place: they are what people search for.
     description:
       `Clear, printable rules for ${names.length} classic card games: ${shown}${rest}. ` +
-      'Setup, turn order, scoring, house rules, practice drills and cheat sheets.',
+      'Setup, scoring, house rules and cheat sheets.',
     body,
     base: '',
     path: '',

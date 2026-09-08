@@ -100,6 +100,26 @@ function validate(game, index) {
   }
 }
 
+/**
+ * Google cuts meta descriptions around 160 characters. The homepage one lists
+ * every game name, so it grows each time a game is added — this turns that into
+ * a build failure instead of a snippet that silently trails off mid-sentence.
+ */
+const META_MAX = 160;
+function checkMeta(html, where) {
+  const m = html.match(/<meta name="description" content="([^"]*)"/);
+  if (!m) throw new Error(`${where}: no meta description`);
+  const text = m[1]
+    .replace(/&amp;/g, '&').replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+  if (text.length > META_MAX) {
+    throw new Error(
+      `${where}: meta description is ${text.length} chars, over the ${META_MAX} Google shows.\n  ${text}`
+    );
+  }
+  return html;
+}
+
 async function copyAssets() {
   // Recursive: src/assets now contains a fonts/ directory.
   const walk = async (from, to) => {
@@ -166,7 +186,7 @@ async function build() {
   await rm(dist, { recursive: true, force: true });
   await mkdir(join(dist, 'games'), { recursive: true });
 
-  await writeFile(join(dist, 'index.html'), homePage(GAMES, PLANNED));
+  await writeFile(join(dist, 'index.html'), checkMeta(homePage(GAMES, PLANNED), 'index.html'));
 
   for (const [i, game] of GAMES.entries()) {
     const prev = GAMES[i - 1] ?? GAMES[GAMES.length - 1];
@@ -178,7 +198,7 @@ async function build() {
     if (html.includes('undefined')) {
       throw new Error(`${game.slug}: rendered HTML contains "undefined" — check the data file`);
     }
-    await writeFile(join(dist, 'games', `${game.slug}.html`), html);
+    await writeFile(join(dist, 'games', `${game.slug}.html`), checkMeta(html, `games/${game.slug}.html`));
   }
 
   // --- Crawler files -------------------------------------------------------
