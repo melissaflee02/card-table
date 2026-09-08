@@ -7,7 +7,7 @@ export default {
   players: { min: 3, max: 5, best: '4' },
   time: { min: 25, max: 40 },
   difficulty: 'medium',
-  deck: '1 standard 52-card deck',
+  deck: 'standard',
   tags: ['trick-taking'],
   keywords: ['strategic', 'low score', 'queen of spades', 'shooting the moon', 'passing'],
   objective:

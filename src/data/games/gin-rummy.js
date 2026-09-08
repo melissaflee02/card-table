@@ -7,7 +7,7 @@ export default {
   players: { min: 2, max: 2 },
   time: { min: 15, max: 30 },
   difficulty: 'medium',
-  deck: '1 standard 52-card deck',
+  deck: 'standard',
   tags: ['melds'],
   // 'jim rummy' is a common mishearing of 'gin rummy' — worth matching.
   keywords: ['two player', '2 player', 'strategic', 'rummy', 'knock', 'sets and runs', 'jim rummy', 'gin rummi'],

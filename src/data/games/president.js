@@ -7,7 +7,7 @@ export default {
   players: { min: 4, max: 7, best: '5–6' },
   time: { min: 20, max: 40 },
   difficulty: 'easy',
-  deck: '1 standard 52-card deck',
+  deck: 'standard',
   tags: ['shedding', 'party'],
   keywords: ['climbing', 'scum', 'asshole', 'big two', 'ranks', 'easy'],
   objective:

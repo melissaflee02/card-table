@@ -7,7 +7,7 @@ export default {
   players: { min: 3, max: 8, best: '4–6' },
   time: { min: 15, max: 25 },
   difficulty: 'easy',
-  deck: '1 standard 52-card deck',
+  deck: 'standard',
   tags: ['shedding', 'bluffing', 'party'],
   keywords: ['bs', 'bullshit', 'i doubt it', 'lying', 'bluff', 'easy'],
   objective:

@@ -44,6 +44,12 @@ function validate(game, index) {
   if (game.scoring && !['low', 'high'].includes(game.scoring.mode)) {
     throw new Error(`${where}: scoring.mode must be "low" or "high"`);
   }
+  if (!['standard', 'own'].includes(game.deck)) {
+    throw new Error(`${where}: deck must be "standard" or "own", got "${game.deck}"`);
+  }
+  if (game.extras !== undefined && (!Array.isArray(game.extras) || !game.extras.length)) {
+    throw new Error(`${where}: extras must be a non-empty array when present`);
+  }
   if (game.cardLibrary) {
     if (!game.cardLibrary.intro || !Array.isArray(game.cardLibrary.entries)) {
       throw new Error(`${where}: cardLibrary needs intro and entries[]`);

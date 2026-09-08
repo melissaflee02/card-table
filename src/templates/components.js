@@ -7,6 +7,30 @@ import { renderBlocks } from './blocks.js';
 const RED = new Set(['♥', '♦']);
 
 /**
+ * Equipment tiers. The practical question a reader has is "can I play this
+ * right now with what's in the drawer", which splits three ways, not two:
+ * a plain deck, a deck plus a physical extra, or a game with its own deck.
+ * Jokers are not an extra — they come in the pack.
+ */
+export const EQUIPMENT = [
+  { id: 'just-deck', label: 'Just a deck', short: 'Deck only',
+    test: (g) => g.deck === 'standard' && !g.extras?.length },
+  { id: 'deck-plus', label: 'Deck + extras', short: 'Deck + extras',
+    test: (g) => g.deck === 'standard' && !!g.extras?.length },
+  { id: 'own-deck', label: 'Its own deck', short: 'Own deck',
+    test: (g) => g.deck === 'own' },
+];
+
+export const equipmentTier = (game) =>
+  EQUIPMENT.find((e) => e.test(game)) || EQUIPMENT[0];
+
+/** The display string for the at-a-glance "Deck" row. */
+export function deckLabel(game) {
+  const base = game.deck === 'own' ? 'Its own deck' : 'Standard 52-card deck';
+  return game.deckNote ? `${base}, ${game.deckNote}` : base;
+}
+
+/**
  * A small playing-card chip. `face` is "K♥" / "10♣", or a bare label like
  * "2–10" for a rule that covers a range rather than one card.
  */
@@ -125,4 +149,31 @@ export function drills(game) {
     <div class="drills">${game.drills.map(one).join('')}</div>
     <noscript><p class="callout callout--note">The drills need JavaScript. The rules above cover the same ground.</p></noscript>
   </section>`;
+}
+
+/**
+ * Brand mark: a small playing card with a spade, drawn in CSS. No image
+ * dependency, and it scales with the header.
+ */
+export function brandMark() {
+  return `<span class="brandmark" aria-hidden="true"><span class="brandmark__pip">&#9824;</span></span>`;
+}
+
+/**
+ * Decorative fan of three cards for the hero. Purely ornamental, so it is
+ * hidden from assistive technology and carries no information.
+ */
+export function decorativeCardFan() {
+  const cards = [
+    { rank: 'A', suit: '\u2663', tone: 'black' },
+    { rank: 'Q', suit: '\u2665', tone: 'red' },
+    { rank: '7', suit: '\u2660', tone: 'black' },
+  ];
+  return `<div class="fan" aria-hidden="true">
+    ${cards.map((c, i) => `<span class="fan__card fan__card--${i + 1}" data-tone="${c.tone}">
+      <span class="fan__corner fan__corner--tl"><b>${c.rank}</b><i>${c.suit}</i></span>
+      <span class="fan__pip">${c.suit}</span>
+      <span class="fan__corner fan__corner--br"><b>${c.rank}</b><i>${c.suit}</i></span>
+    </span>`).join('')}
+  </div>`;
 }

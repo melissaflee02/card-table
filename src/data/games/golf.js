@@ -7,7 +7,7 @@ export default {
   players: { min: 2, max: 4, best: '3–4' },
   time: { min: 20, max: 30 },
   difficulty: 'easy',
-  deck: '1 standard 52-card deck',
+  deck: 'standard',
   tags: ['memory'],
   keywords: ['low score', 'six card golf', 'nine card golf', 'holes', 'layout', 'easy'],
   objective:

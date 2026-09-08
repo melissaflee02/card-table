@@ -1,6 +1,6 @@
 import { layout } from './layout.js';
 import { renderBlocks, esc } from './blocks.js';
-import { cardLibrary, drills, progressRing } from './components.js';
+import { cardLibrary, drills, progressRing, deckLabel, equipmentTier } from './components.js';
 
 export const playerLabel = (p) =>
   p.min === p.max ? `${p.min} players` : `${p.min}–${p.max} players`;
@@ -12,9 +12,12 @@ function statsRow(game) {
   const items = [
     ['Players', playerLabel(game.players) + (game.players.best ? ` (best with ${esc(game.players.best)})` : '')],
     ['Time', timeLabel(game.time)],
-    ['Deck', game.deck],
+    ['What you need', esc(deckLabel(game))],
     ['Difficulty', game.difficulty === 'easy' ? 'Easy to learn' : 'Some strategy'],
   ];
+  if (game.extras?.length) {
+    items.push(['Also bring', game.extras.map(esc).join(', ')]);
+  }
   return `<dl class="stats">${items
     .map(([k, v]) => `<div class="stats__item"><dt>${esc(k)}</dt><dd>${v}</dd></div>`)
     .join('')}</dl>`;
@@ -22,7 +25,7 @@ function statsRow(game) {
 
 function sectionNav(entries) {
   return `
-  <nav class="anchor-nav" aria-label="Jump to section">
+  <nav class="anchor-nav" aria-label="On this page">
     <ul>${entries.map((e) => `<li><a href="#${esc(e.id)}">${esc(e.title)}</a></li>`).join('')}</ul>
   </nav>`;
 }
@@ -86,7 +89,7 @@ function cheatSheetBlock(game) {
     <div class="cheatsheet__card">
       <header class="cheatsheet__title">
         <h3>${esc(game.name)}</h3>
-        <p>${playerLabel(game.players)} &middot; ${timeLabel(game.time)} &middot; ${esc(game.deck)}</p>
+        <p>${playerLabel(game.players)} &middot; ${timeLabel(game.time)} &middot; ${esc(deckLabel(game))}${game.extras?.length ? ` &middot; ${game.extras.map(esc).join(', ')}` : ''}</p>
       </header>
       <div class="cheatsheet__grid">
         <div class="cheatsheet__cell">
@@ -163,9 +166,10 @@ export function gamePage(game, { prev, next }) {
     </header>
   </div>
 
+  <div class="wrap game__layout">
   ${sectionNav(navEntries)}
 
-  <div class="wrap game__body">
+  <div class="game__body">
     <section class="section" id="objective">
       <h2>Objective</h2>
       <p class="objective">${esc(game.objective)}</p>
@@ -193,6 +197,7 @@ export function gamePage(game, { prev, next }) {
       ${prev ? `<a class="pager__link" href="${esc(prev.slug)}.html"><span>Previous</span><strong>${esc(prev.name)}</strong></a>` : '<span></span>'}
       ${next ? `<a class="pager__link pager__link--next" href="${esc(next.slug)}.html"><span>Next</span><strong>${esc(next.name)}</strong></a>` : '<span></span>'}
     </nav>
+  </div>
   </div>
 </article>`;
 

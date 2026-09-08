@@ -1,13 +1,14 @@
 import { contrastRatio } from '../../lib/contrast.js';
 import indieGreen from './indie-green.js';
 import indieBlue from './indie-blue.js';
+import cardroom from './cardroom.js';
 
-export const THEMES = { 'indie-green': indieGreen, 'indie-blue': indieBlue };
+export const THEMES = { cardroom, 'indie-green': indieGreen, 'indie-blue': indieBlue };
 
 // ---------------------------------------------------------------------------
 // Change this one line to reskin the whole site, then `npm run build`.
 // ---------------------------------------------------------------------------
-export const ACTIVE = 'indie-green';
+export const ACTIVE = 'cardroom';
 
 // Card faces are deliberately near-white in both themes and the ink on them is
 // fixed, because a playing card is white — inverting one in dark mode reads as
@@ -19,7 +20,7 @@ const HEX_KEYS = [
   'bg', 'surface', 'surface2', 'border', 'borderStrong', 'text', 'textMuted',
   'inputBorder', 'accent', 'accentHover', 'accentSoft', 'accentOnSoft',
   'accentSolid', 'accentSolidHover', 'accentOnSolid', 'suitRed',
-  'panel', 'panelText', 'panelMuted', 'panelBorder',
+  'panel', 'panelText', 'panelMuted', 'panelBorder', 'panelAccent',
   'warningBg', 'warningBorder', 'dangerBg', 'dangerBorder',
   'cardFace', 'cardBorder', 'cardBack',
   'diagramArrow', 'diagramGood', 'diagramWarn', 'diagramGoodBg', 'diagramWarnBg',
@@ -52,7 +53,7 @@ const TEXT_PAIRS = [
   ['text', 'diagramWarnBg', 'text in an amber diagram box'],
   ['panelText', 'panel', 'body text on a dark slate panel'],
   ['panelMuted', 'panel', 'secondary text on a dark slate panel'],
-  ['accentSolid', 'panel', 'the accent used for type on a panel'],
+  ['panelAccent', 'panel', 'accent type on a panel — brass, where green would vanish'],
   ['suitRed', 'dangerBg', 'a wrong answer in a Try It drill'],
   ['text', 'dangerBg', 'body text in a wrong-answer drill state'],
 ];

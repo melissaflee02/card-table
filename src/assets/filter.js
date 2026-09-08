@@ -8,6 +8,7 @@
 
   var items = Array.prototype.slice.call(grid.querySelectorAll('[data-game]'));
   var countEl = document.querySelector('[data-count]');
+  var labelEl = document.querySelector('[data-results-label]');
   var emptyEl = document.querySelector('[data-empty]');
   var resetBtns = Array.prototype.slice.call(document.querySelectorAll('[data-reset]'));
   var search = form.querySelector('#q');
@@ -35,7 +36,8 @@
     var players = checked('players');
     var duration = checked('duration');
     var tags = checked('tags');
-    var active = q !== '' || players.length || duration.length || tags.length;
+    var kit = checked('kit');
+    var active = q !== '' || players.length || duration.length || tags.length || kit.length;
     var shown = 0;
 
     items.forEach(function (item) {
@@ -43,25 +45,26 @@
         (q === '' || (item.dataset.search || '').indexOf(q) !== -1) &&
         matchesGroup(item, 'players', players) &&
         matchesGroup(item, 'duration', duration) &&
-        matchesGroup(item, 'tags', tags);
+        matchesGroup(item, 'tags', tags) &&
+        matchesGroup(item, 'kit', kit);
       item.hidden = !hit;
       if (hit) shown++;
     });
 
     if (countEl) {
-      countEl.textContent = active
-        ? shown + (shown === 1 ? ' game matches' : ' games match')
-        : items.length + ' games';
+      countEl.textContent = shown + (shown === 1 ? ' game' : ' games');
     }
+    // "All games" is truthful; the grid is not ranked, so it is not "popular".
+    if (labelEl) labelEl.textContent = active ? 'Matching games' : 'All games';
     if (emptyEl) emptyEl.hidden = shown !== 0;
     resetBtns.forEach(function (b) {
       b.hidden = !active;
     });
 
-    writeHash(q, players, duration, tags, active);
+    writeHash(q, players, duration, tags, kit, active);
   }
 
-  function writeHash(q, players, duration, tags, active) {
+  function writeHash(q, players, duration, tags, kit, active) {
     if (!active) {
       if (location.hash) history.replaceState(null, '', location.pathname);
       return;
@@ -71,6 +74,7 @@
     if (players.length) parts.push('players=' + players.join(','));
     if (duration.length) parts.push('length=' + duration.join(','));
     if (tags.length) parts.push('type=' + tags.map(encodeURIComponent).join(','));
+    if (kit.length) parts.push('kit=' + kit.join(','));
     history.replaceState(null, '', '#' + parts.join('&'));
   }
 
@@ -87,7 +91,7 @@
         search.value = val;
         return;
       }
-      var name = { players: 'players', length: 'duration', type: 'tags' }[key];
+      var name = { players: 'players', length: 'duration', type: 'tags', kit: 'kit' }[key];
       if (!name) return;
       val.split(',').forEach(function (v) {
         var input = form.querySelector(

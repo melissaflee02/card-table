@@ -1,4 +1,5 @@
-import { esc } from './blocks.js';
+import { esc } from './escape.js';
+import { brandMark } from './components.js';
 
 export const SITE = {
   name: 'Card Table',
@@ -9,7 +10,7 @@ export const SITE = {
 const THEME_BOOT = `(function(){try{var t=localStorage.getItem('theme');
 if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;}catch(e){}})();`;
 
-export function layout({ title, description, body, base = '', scripts = [], bodyClass = '' }) {
+export function layout({ title, description, body, base = '', scripts = [], bodyClass = '', page = '' }) {
   const fullTitle = title ? `${title} — ${SITE.name}` : `${SITE.name} — ${SITE.tagline}`;
   return `<!DOCTYPE html>
 <html lang="en">
@@ -33,9 +34,12 @@ export function layout({ title, description, body, base = '', scripts = [], body
 <header class="site-header">
   <div class="wrap site-header__inner">
     <a class="brand" href="${base}index.html">
-      <span class="brand__mark" aria-hidden="true">&#9824;</span>
+      ${brandMark()}
       <span class="brand__name">${esc(SITE.name)}</span>
     </a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="${base}index.html"${page === 'home' ? ' aria-current="page"' : ''}>All games</a>
+    </nav>
     <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark theme" hidden>
       <span class="theme-toggle__icon" aria-hidden="true"></span>
       <span class="theme-toggle__text">Theme</span>

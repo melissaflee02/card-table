@@ -27,6 +27,7 @@ export default {
     panelText: '#f3f5f8',
     panelMuted: '#a7b0bd',
     panelBorder: '#2f3742',
+    panelAccent: '#2f9bff',
 
     suitRed: '#bd2130',
     warningBg: '#fdf4e3',
@@ -72,6 +73,7 @@ export default {
     panelText: '#f3f5f8',
     panelMuted: '#a7b0bd',
     panelBorder: '#3a4553',
+    panelAccent: '#2f9bff',
 
     suitRed: '#ff9a94',
     warningBg: '#2c2317',

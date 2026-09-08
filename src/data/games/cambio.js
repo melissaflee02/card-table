@@ -7,7 +7,8 @@ export default {
   players: { min: 2, max: 6, best: '3–6' },
   time: { min: 10, max: 20 },
   difficulty: 'easy',
-  deck: '52-card deck + jokers',
+  deck: 'standard',
+  deckNote: 'including the two jokers',
   tags: ['memory', 'party'],
   keywords: ['low score', 'grid', 'cabo', 'slap', 'stick', 'easy'],
   objective:

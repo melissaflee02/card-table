@@ -1,7 +1,7 @@
 import { layout, SITE } from './layout.js';
-import { esc } from './blocks.js';
+import { esc } from './escape.js';
 import { playerLabel, timeLabel } from './game.js';
-import { progressRing } from './components.js';
+import { progressRing, EQUIPMENT, equipmentTier, decorativeCardFan } from './components.js';
 
 // Bucket on the *typical* length (midpoint of the range), not the worst case.
 // Bucketing on time.max put every game in medium-or-longer and left the
@@ -12,6 +12,13 @@ const DURATION_FILTERS = [
   { id: 'quick', label: 'Under 15 min', test: (g) => typicalMinutes(g) <= 15 },
   { id: 'medium', label: '15–30 min', test: (g) => typicalMinutes(g) > 15 && typicalMinutes(g) <= 30 },
   { id: 'long', label: '30 min+', test: (g) => typicalMinutes(g) > 30 },
+];
+
+const PLAYER_FILTERS = [
+  { id: 'p2', label: '2', test: (g) => g.players.min <= 2 && g.players.max >= 2 },
+  { id: 'p3', label: '3', test: (g) => g.players.min <= 3 && g.players.max >= 3 },
+  { id: 'p4', label: '4', test: (g) => g.players.min <= 4 && g.players.max >= 4 },
+  { id: 'p5', label: '5+', test: (g) => g.players.max >= 5 },
 ];
 
 // Tag slugs are terse for the data files; these are what a reader sees.
@@ -25,60 +32,50 @@ const TAG_LABELS = {
   party: 'Party',
 };
 
-const PLAYER_FILTERS = [
-  { id: 'p2', label: '2', test: (g) => g.players.min <= 2 && g.players.max >= 2 },
-  { id: 'p3', label: '3', test: (g) => g.players.min <= 3 && g.players.max >= 3 },
-  { id: 'p4', label: '4', test: (g) => g.players.min <= 4 && g.players.max >= 4 },
-  { id: 'p5', label: '5+', test: (g) => g.players.max >= 5 },
-];
-
-function chips(name, legend, filters) {
+/** One filter group. Only rendered when more than one option matches a game. */
+function filterGroup(name, legend, options) {
+  if (options.length < 2) return '';
   return `
-  <fieldset class="chips">
+  <fieldset class="filters__group">
     <legend>${esc(legend)}</legend>
-    ${filters
-      .map(
-        (f) => `<label class="chip">
-      <input type="checkbox" name="${esc(name)}" value="${esc(f.id)}">
-      <span>${esc(f.label)}</span>
-    </label>`
-      )
-      .join('')}
+    <div class="chips">
+      ${options.map((o) => `<label class="chip">
+        <input type="checkbox" name="${esc(name)}" value="${esc(o.id)}">
+        <span>${esc(o.label)}</span>
+      </label>`).join('')}
+    </div>
   </fieldset>`;
 }
 
 function gameCard(game) {
   // Filter state lives in data attributes so filtering is a pure DOM read —
   // no duplicated game list shipped to the client.
+  const tier = equipmentTier(game);
   const durations = DURATION_FILTERS.filter((f) => f.test(game)).map((f) => f.id);
   const players = PLAYER_FILTERS.filter((f) => f.test(game)).map((f) => f.id);
   const haystack = [
-    game.name,
-    ...(game.aliases || []),
-    ...(game.tags || []),
-    ...(game.keywords || []),
-    game.tagline,
-  ]
-    .join(' ')
-    .toLowerCase();
+    game.name, ...(game.aliases || []), ...(game.tags || []),
+    ...(game.keywords || []), game.tagline,
+  ].join(' ').toLowerCase();
 
   return `
-  <li class="card-item"
-      data-game
+  <li class="card-item" data-game
       data-search="${esc(haystack)}"
       data-players="${players.join(' ')}"
       data-duration="${durations.join(' ')}"
-      data-tags="${esc((game.tags || []).join(' '))}">
+      data-tags="${esc((game.tags || []).join(' '))}"
+      data-kit="${esc(tier.id)}">
     <a class="game-card" href="games/${esc(game.slug)}.html">
       <span class="game-card__suit" data-suit="${'♥♦'.includes(game.suit) ? 'red' : 'black'}" aria-hidden="true">${esc(game.suit || '♠')}</span>
-      <h3 class="game-card__name">${esc(game.name)}</h3>
-      ${game.aliases?.length ? `<p class="game-card__aka">aka ${esc(game.aliases.slice(0, 2).join(', '))}</p>` : ''}
-      <p class="game-card__tagline">${esc(game.tagline)}</p>
       ${game.drills?.length ? progressRing(game.slug, game.drills.length, { size: 'sm' }) : ''}
+      <h3 class="game-card__name">${esc(game.name)}</h3>
+      ${game.aliases?.length ? `<p class="game-card__aka">also called ${esc(game.aliases.slice(0, 2).join(', '))}</p>` : ''}
+      <p class="game-card__tagline">${esc(game.tagline)}</p>
       <span class="game-card__meta">
         <span class="pill">${esc(playerLabel(game.players))}</span>
         <span class="pill">${esc(timeLabel(game.time))}</span>
         <span class="pill pill--${esc(game.difficulty)}">${game.difficulty === 'easy' ? 'Easy' : 'Strategic'}</span>
+        <span class="pill pill--kit">${esc(tier.short)}</span>
       </span>
     </a>
   </li>`;
@@ -86,7 +83,6 @@ function gameCard(game) {
 
 export function homePage(games, planned) {
   const present = new Set(games.flatMap((g) => g.tags || []));
-  const tags = Object.keys(TAG_LABELS).filter((t) => present.has(t));
   const unlabelled = [...present].filter((t) => !TAG_LABELS[t]);
   if (unlabelled.length) {
     throw new Error(`Tags used in game data but missing from TAG_LABELS: ${unlabelled.join(', ')}`);
@@ -94,36 +90,42 @@ export function homePage(games, planned) {
 
   const body = `
 <div class="wrap">
-  <section class="hero">
-    <h1>${esc(SITE.tagline)}</h1>
-    <p class="hero__sub">No sign-ups, no pop-ups, no ten paragraphs about the history of playing cards. Pick a game, get the rules, deal.</p>
-  </section>
-
+  <!-- One form spans the hero search and the filter bar so a single reset
+       clears everything and filter.js keeps one root. -->
   <form class="finder" data-finder role="search" aria-label="Find a card game">
-    <div class="finder__search">
-      <label for="q">Search games</label>
-      <input type="search" id="q" name="q" placeholder="Try “shithead”, “cabo” or “bluffing”" autocomplete="off" spellcheck="false">
-    </div>
-    <div class="finder__filters">
-      ${chips('players', 'Players', PLAYER_FILTERS)}
-      ${chips('duration', 'Length', DURATION_FILTERS)}
-      <fieldset class="chips">
-        <legend>Type</legend>
-        ${tags
-          .map(
-            (t) => `<label class="chip">
-          <input type="checkbox" name="tags" value="${esc(t)}">
-          <span>${esc(TAG_LABELS[t])}</span>
-        </label>`
-          )
-          .join('')}
-      </fieldset>
-    </div>
-    <div class="finder__foot">
-      <p class="finder__count" data-count role="status" aria-live="polite"></p>
-      <button class="btn btn--quiet" type="reset" data-reset hidden>Clear filters</button>
+    <section class="hero">
+      <div class="hero__copy">
+        <p class="hero__eyebrow">Pick a game. Learn it fast.</p>
+        <h1>Rules on the table in two minutes.</h1>
+        <p class="hero__sub">No sign-ups, no pop-ups, no ten-paragraph history lesson. Find the setup, settle the argument, and get back to the game.</p>
+        <div class="hero__search">
+          <label class="sr-only" for="q">Search games</label>
+          <span class="hero__search-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="9" cy="9" r="6"/><path d="M13.5 13.5 L18 18" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <input type="search" id="q" name="q"
+                 placeholder="Search “hearts”, “bluffing” or “2 players”"
+                 autocomplete="off" spellcheck="false">
+        </div>
+      </div>
+      ${decorativeCardFan()}
+    </section>
+
+    <div class="filters">
+      ${filterGroup('players', 'Players', PLAYER_FILTERS)}
+      ${filterGroup('duration', 'Length', DURATION_FILTERS)}
+      ${filterGroup('kit', 'What you need', EQUIPMENT.filter((e) => games.some((g) => e.test(g))))}
+      ${filterGroup('tags', 'Type', Object.keys(TAG_LABELS).filter((t) => present.has(t)).map((t) => ({ id: t, label: TAG_LABELS[t] })))}
+      <button class="btn btn--quiet filters__clear" type="reset" data-reset hidden>Clear filters</button>
     </div>
   </form>
+
+  <div class="results">
+    <h2 class="results__title" data-results-label>All games</h2>
+    <p class="results__count" data-count role="status" aria-live="polite"></p>
+  </div>
 
   <ul class="game-grid" data-grid>
     ${games.map(gameCard).join('\n')}
@@ -147,10 +149,11 @@ export function homePage(games, planned) {
   return layout({
     title: '',
     description:
-      'Clear, printable rules for popular card games: Cambio, Gin Rummy, Palace, Hearts and President. Setup, turn order, scoring, house rules and cheat sheets.',
+      'Clear, printable rules for popular card games: Cambio, Gin Rummy, Palace, Hearts, Spades and more. Setup, turn order, scoring, house rules and cheat sheets.',
     body,
     base: '',
     bodyClass: 'page-home',
+    page: 'home',
     scripts: ['filter.js', 'progress.js'],
   });
 }

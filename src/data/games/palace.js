@@ -7,7 +7,7 @@ export default {
   players: { min: 2, max: 6, best: '3–5' },
   time: { min: 10, max: 20 },
   difficulty: 'easy',
-  deck: '1 standard 52-card deck',
+  deck: 'standard',
   tags: ['shedding', 'bluffing', 'party'],
   keywords: ['shithead', 'shit head', 'karma', 'shed', 'pile', 'burn', 'easy'],
   objective:

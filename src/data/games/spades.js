@@ -7,7 +7,7 @@ export default {
   players: { min: 4, max: 4, best: '4 (two partnerships)' },
   time: { min: 30, max: 45 },
   difficulty: 'medium',
-  deck: '1 standard 52-card deck',
+  deck: 'standard',
   tags: ['trick-taking'],
   keywords: ['partnership', 'bidding', 'nil', 'bags', 'trump', 'call bridge'],
   objective:
