@@ -79,6 +79,7 @@ export function cardLibrary(game) {
           ${tags.map((t) => `<button class="tagchip" type="button" data-cardlib-tag="${esc(t)}" aria-pressed="false">${esc(t)}</button>`).join('')}
         </div>` : ''}
       </div>
+      <p class="cardlib__count" data-cardlib-count role="status" aria-live="polite"></p>
       <ul class="cardlib__grid">${lib.entries.map(item).join('')}</ul>
       <p class="cardlib__empty" data-cardlib-empty hidden>No cards match that filter.</p>
     </div>
@@ -106,7 +107,7 @@ export function drills(game) {
           </button>
         </li>`).join('')}
       </ul>
-      <div class="drill__feedback" data-drill-feedback hidden>
+      <div class="drill__feedback" data-drill-feedback hidden tabindex="-1">
         <p data-drill-feedback-text></p>
         <button class="btn btn--quiet drill__again" type="button" data-drill-again>Try again</button>
       </div>

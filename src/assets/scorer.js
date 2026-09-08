@@ -228,15 +228,22 @@
     }
 
     save();
+    var action = el.dataset.action || el.getAttributeNames().find(function (n) {
+      return n.indexOf('data-') === 0 && n !== 'data-action';
+    });
     render();
 
-    // Put the cursor in the first cell of a freshly added round.
-    if (el.hasAttribute('data-add-round')) {
+    // render() replaces the panel, so the button that was just clicked no
+    // longer exists and focus falls to <body>. Put it back on the equivalent
+    // control, or on the first cell of a freshly added round.
+    if (action === 'data-add-round') {
       var first = host.querySelector(
         'input[data-round="' + (state.rounds.length - 1) + '"][data-player="0"]'
       );
-      if (first) first.focus();
+      if (first) { first.focus(); return; }
     }
+    var again = host.querySelector('[' + action + ']') || host.querySelector('[data-add-round]');
+    if (again) again.focus();
   });
 
   render();

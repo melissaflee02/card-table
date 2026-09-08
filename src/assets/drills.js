@@ -24,6 +24,12 @@
       if (check) check.hidden = false;
       if (progress) progress.complete(drill.dataset.game, drill.dataset.id);
     }
+
+    // Answering disables the button that was focused, which drops focus to
+    // <body> and loses a keyboard user's place. Move it to the feedback
+    // instead: it is where the explanation is, and focusing it gets the text
+    // read out without needing a separate live region.
+    box.focus();
   }
 
   function reset(drill) {
@@ -34,6 +40,8 @@
       opts[i].disabled = false;
       opts[i].removeAttribute('data-picked');
     }
+    // "Try again" lives inside the box we just hid, so focus would be dropped.
+    if (opts.length) opts[0].focus();
   }
 
   for (var i = 0; i < drills.length; i++) {

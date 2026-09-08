@@ -446,7 +446,11 @@ tbody tr:hover { background: var(--surface-2); }
   color: var(--accent-on-soft); background: var(--accent-soft); border-radius: var(--pill);
 }
 .cardlib__effect { margin: 0; font-size: .85rem; color: var(--text-muted); line-height: 1.5; }
+.cardlib__count { margin: 0; font-size: .8125rem; font-weight: 600; color: var(--text-muted); }
 .cardlib__empty { padding: 1.5rem; text-align: center; color: var(--text-muted); background: var(--surface-2); border-radius: var(--radius); }
+/* Focused programmatically after answering; no visible ring for mouse users. */
+.drill__feedback:focus { outline: none; }
+.drill__feedback:focus-visible { outline: 3px solid var(--accent-solid); outline-offset: 2px; }
 
 /* ---------- Try It drills ---------- */
 
