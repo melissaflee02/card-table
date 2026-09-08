@@ -342,6 +342,72 @@ const BUILDERS = {
     });
   },
 
+  /** Spades: trump beats rank. A low spade takes a trick full of high hearts. */
+  'spades-trump': (id) => {
+    const pid = `${id}-back`;
+    const aid = `${id}-arw`;
+    const step = CARD_W + 16;
+    const rowW = step * 3 + CARD_W;
+    const col = Math.max(rowW, 274);
+    const ox = (col - rowW) / 2;
+    const top = 26;
+    const plays = [
+      { seat: 'N', spec: 'A♥', tag: 'leads ♥' },
+      { seat: 'E', spec: 'K♥', tag: '' },
+      { seat: 'S', spec: '2♠', tag: 'trumps, wins', win: true },
+      { seat: 'W', spec: '9♥', tag: '' },
+    ];
+    const h = top + CARD_H + 52;
+    return svg({
+      id, w: col, h,
+      title: 'Spades: a trump beats any rank',
+      desc:
+        'North leads the ace of hearts, the highest card in the suit. South has no hearts and plays the two of spades. Spades are trump, so that two wins the trick against an ace.',
+      body: `
+        ${defs(pid, aid)}
+        ${plays.map((pl, i) => {
+          const x = ox + i * step;
+          return `
+          ${muted(x + CARD_W / 2, 14, pl.seat, { size: 10.5 })}
+          ${pl.win ? ring(x, top) : ''}
+          ${card(x, top, pl.spec, pid)}
+          ${pl.win
+            ? strong(x + CARD_W / 2, top + CARD_H + 18, pl.tag, 'var(--diagram-good)', 10.5)
+            : muted(x + CARD_W / 2, top + CARD_H + 18, pl.tag)}`;
+        }).join('')}
+        ${muted(col / 2, h - 10, 'any spade beats any non-spade', { size: 10.5 })}`,
+    });
+  },
+
+  /** Golf: the six-card layout and the two cards you start face up. */
+  'golf-layout': (id) => {
+    const pid = `${id}-back`;
+    const aid = `${id}-arw`;
+    const gapX = 8;
+    const gapY = 8;
+    const gridW = CARD_W * 3 + gapX * 2;
+    const col = Math.max(gridW, 236);
+    const ox = (col - gridW) / 2;
+    const top = 30;
+    const rowY = [top, top + CARD_H + gapY];
+    const bottom = rowY[1] + CARD_H;
+    // Two face up, four face down — the player picks which two.
+    const layout = [['?', 'K♠', '?'], ['?', '?', '4♥']];
+    const h = bottom + 40;
+    return svg({
+      id, w: col, h,
+      title: 'Golf: the six-card layout',
+      desc:
+        'Six cards are dealt face down in three columns of two. Before play each player turns any two of them face up. The other four stay hidden until they are swapped or the round ends.',
+      body: `
+        ${defs(pid, aid)}
+        ${muted(col / 2, 16, 'six cards, any two turned face up')}
+        ${layout.map((row, r) => row.map((spec, c) =>
+          card(ox + c * (CARD_W + gapX), rowY[r], spec, pid)).join('')).join('')}
+        ${muted(col / 2, bottom + 22, 'a column of two matching ranks scores 0', { size: 10.5 })}`,
+    });
+  },
+
   /** President: the two card exchanges, and their asymmetry. */
   'president-exchange': (id) => {
     const aid = `${id}-arw`;

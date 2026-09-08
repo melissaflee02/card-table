@@ -3,23 +3,35 @@ import ginRummy from './games/gin-rummy.js';
 import palace from './games/palace.js';
 import hearts from './games/hearts.js';
 import president from './games/president.js';
+import spades from './games/spades.js';
+import crazyEights from './games/crazy-eights.js';
+import golf from './games/golf.js';
+import cheat from './games/cheat.js';
 
 // Order here is the order on the homepage and the prev/next pager.
-export const GAMES = [cambio, ginRummy, palace, hearts, president];
+export const GAMES = [
+  cambio, ginRummy, palace, hearts, president,
+  spades, crazyEights, golf, cheat,
+];
 
 // Roadmap. Adding a game = write src/data/games/<slug>.js, import it above,
 // and delete its entry from this list.
 export const PLANNED = [
-  // Wave 2 — trick-taking + party classics, all standard 52-card deck.
-  { name: 'Spades', note: 'partnership trick-taking' },
-  { name: 'Crazy Eights', note: 'shedding' },
-  { name: 'Golf', note: '6- and 9-card' },
-  { name: 'Spoons', note: 'reflex' },
-  { name: 'Cheat', note: 'aka BS' },
+  // Wave 2 remainder — standard 52-card deck.
   { name: 'Euchre', note: 'trick-taking' },
-  { name: 'Cribbage', note: '2-player classic' },
+  { name: 'Cribbage', note: 'needs a board' },
+  { name: 'Rummy 500', note: 'melds, 2–6' },
+  { name: 'Spoons', note: 'reflex' },
+  { name: 'Egyptian Ratscrew', note: 'reflex' },
+  { name: 'Kings in the Corner', note: 'solitaire-ish' },
+  { name: 'Go Fish', note: 'matching' },
+  { name: 'War', note: 'pure luck' },
 
-  // Wave 3 — branded games. These need a `deck` value that is not
+  // Wave 3 — gambling games, standard deck.
+  { name: 'Blackjack', note: 'casino classic' },
+  { name: "Texas Hold'em", note: 'poker' },
+
+  // Wave 4 — branded games. These need a `deck` value that is not
   // "1 standard 52-card deck", plus a note about what you have to buy.
   { name: 'Uno', note: 'own deck' },
   { name: 'Exploding Kittens', note: 'own deck' },
