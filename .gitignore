@@ -6,3 +6,6 @@ dist/
 node_modules/
 
 .DS_Store
+
+# Scratch dir used while rendering Open Graph cards.
+.og-tmp/

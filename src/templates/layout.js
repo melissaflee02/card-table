@@ -16,11 +16,15 @@ if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;}catch(e){}}
 
 export function layout({
   title, description, body, base = '', scripts = [], bodyClass = '', page = '',
-  path = '', jsonLd = null,
+  path = '', jsonLd = null, ogImage: ogImagePath = 'assets/og-card.png', ogImageAlt = '',
 }) {
   const fullTitle = title ? `${title} — ${SITE.name}` : `${SITE.name} — ${SITE.tagline}`;
   const canonical = `${SITE.origin}/${path}`.replace(/\/+$/, '/').replace(/([^:])\/\//g, '$1/');
-  const ogImage = `${SITE.origin}/assets/og-card.png`;
+  // Social crawlers do not resolve relative URLs, so this is always absolute.
+  // Game pages pass their own card: a link dropped in a group chat should say
+  // which game it is, not show the same generic image every time.
+  const ogImage = `${SITE.origin}/${ogImagePath}`;
+  const ogAlt = ogImageAlt || `${SITE.name} — ${SITE.tagline}`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,11 +42,12 @@ export function layout({
 <meta property="og:image" content="${esc(ogImage)}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="${esc(SITE.name)} — ${esc(SITE.tagline)}">
+<meta property="og:image:alt" content="${esc(ogAlt)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(fullTitle)}">
 <meta name="twitter:description" content="${esc(description)}">
 <meta name="twitter:image" content="${esc(ogImage)}">
+<meta name="twitter:image:alt" content="${esc(ogAlt)}">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#18362d" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3eedf" media="(prefers-color-scheme: light)">

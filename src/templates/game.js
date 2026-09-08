@@ -60,7 +60,12 @@ function hintsBlock(game) {
   return `
   <section class="section" id="hints">
     <h2>Strategy hints</h2>
-    <ol class="hints">${game.hints.map((h) => `<li>${renderBlocks([{ type: 'p', text: h }]).replace(/^<p>|<\/p>$/g, '')}</li>`).join('')}</ol>
+    <!-- Keep the <p>. .hints li is display:grid, and a grid container turns every
+         child *and every contiguous run of text* into its own grid item. Strip the
+         wrapper and a hint like "There are exactly **four of each rank**." becomes
+         three items — the <strong> lands in the 1.9rem badge column and wraps one
+         word per line. The <p> keeps each hint as a single item. -->
+    <ol class="hints">${game.hints.map((h) => `<li>${renderBlocks([{ type: 'p', text: h }])}</li>`).join('')}</ol>
   </section>`;
 }
 
@@ -242,6 +247,8 @@ export function gamePage(game, { prev, next }) {
     description: `How to play ${game.name}${game.aliases?.length ? ` (also called ${game.aliases.join(', ')})` : ''}: setup, turn order, scoring, house rules and a printable cheat sheet. ${playerLabel(game.players)}, ${timeLabel(game.time)}.`,
     body,
     base: '../',
+    ogImage: `assets/og/${game.slug}.png`,
+    ogImageAlt: `How to play ${game.name} — ${game.tagline}`,
     path: `games/${game.slug}.html`,
     jsonLd,
     bodyClass: 'page-game',
