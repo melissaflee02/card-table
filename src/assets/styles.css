@@ -458,12 +458,18 @@ code {
 .section ul, .section ol { padding-left: 1.4rem; margin: 0 0 1.15rem; }
 .section li { margin-bottom: .5rem; }
 .section li:last-child { margin-bottom: 0; }
-/* Brick-red step numbers, per the accent rules. */
-.section ol { list-style: none; padding-left: 0; counter-reset: step; }
-.section ol > li {
+/* Brick-red step numbers, per the accent rules.
+   Excludes .hints, which is also an <ol> inside a .section but draws its own
+   circular badge. Without the :not(), this rule wins on specificity, makes the
+   badge position:absolute, and drops the hint text into the 30px first column
+   of its grid — one word per line. The cheat sheet is excluded by container
+   rather than by out-specifying it, since :not() raises specificity and this
+   rule would otherwise beat the cheat sheet's own list styling. */
+.section:not(.cheatsheet) ol:not(.hints) { list-style: none; padding-left: 0; counter-reset: step; }
+.section:not(.cheatsheet) ol:not(.hints) > li {
   counter-increment: step; position: relative; padding-left: 2.2rem; margin-bottom: .65rem;
 }
-.section ol > li::before {
+.section:not(.cheatsheet) ol:not(.hints) > li::before {
   content: counter(step) ".";
   position: absolute; left: 0; top: 0;
   font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums;
