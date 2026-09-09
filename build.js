@@ -12,6 +12,7 @@ import { ACTIVE, THEMES, themeCss } from './src/data/themes/index.js';
 import { SITE, layout } from './src/templates/layout.js';
 import { homePage } from './src/templates/home.js';
 import { gamePage } from './src/templates/game.js';
+import { relatedMap } from './src/templates/related.js';
 import { staticPage } from './src/templates/page.js';
 import { PAGES } from './src/data/pages.js';
 
@@ -233,10 +234,15 @@ async function build() {
 
   await writeFile(join(dist, 'index.html'), checkMarkup(checkMeta(homePage(GAMES, PLANNED), 'index.html'), 'index.html'));
 
+  // Computed once for the whole catalogue so the orphan pass can see every page.
+  const related = relatedMap(GAMES);
+
   for (const [i, game] of GAMES.entries()) {
     const prev = GAMES[i - 1] ?? GAMES[GAMES.length - 1];
     const next = GAMES[i + 1] ?? GAMES[0];
     const html = gamePage(game, {
+      all: GAMES,
+      related: related.get(game.slug),
       prev: GAMES.length > 1 ? prev : null,
       next: GAMES.length > 1 ? next : null,
     });

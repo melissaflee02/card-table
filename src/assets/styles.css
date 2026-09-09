@@ -749,3 +749,24 @@ p.callout { padding: 1rem 1.2rem; }
 .prose li { margin-bottom: .5rem; }
 .prose__updated { margin-top: 2.5rem; padding-top: 1.2rem; border-top: 1px solid var(--border);
   font-size: .875rem; color: var(--text-muted); }
+
+/* ---------- Related games ---------- */
+
+.related__list { list-style: none; margin: 0; padding: 0; display: grid; gap: .75rem; }
+@media (min-width: 48rem) { .related__list { grid-template-columns: repeat(3, 1fr); } }
+
+.related__card {
+  display: flex; gap: .8rem; height: 100%; padding: 1rem 1.1rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); text-decoration: none; color: var(--text);
+  transition: border-color var(--t), background var(--t), transform var(--t);
+}
+.related__card:hover {
+  border-color: var(--border-strong); background: var(--surface-2);
+  color: var(--text); transform: translateY(-2px);
+}
+.related__suit { font-size: 1.5rem; line-height: 1.1; color: var(--accent); }
+.related__body { display: flex; flex-direction: column; gap: .2rem; min-width: 0; }
+.related__name { font-size: 1.02rem; font-weight: 700; letter-spacing: -.012em; }
+.related__why { font-size: .875rem; line-height: 1.45; color: var(--text-muted); }
+.related__meta { margin-top: .15rem; font-size: .78rem; font-weight: 600; color: var(--text-muted); }

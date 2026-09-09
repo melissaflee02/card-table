@@ -1,4 +1,5 @@
 import { layout, SITE } from './layout.js';
+import { relatedBlock } from './related.js';
 import { renderBlocks, esc } from './blocks.js';
 import { cardLibrary, drills, progressRing, deckLabel, equipmentTier } from './components.js';
 
@@ -188,7 +189,7 @@ function trackerBlock(game) {
   </section>`;
 }
 
-export function gamePage(game, { prev, next }) {
+export function gamePage(game, { prev, next, all = [], related }) {
   const navEntries = [
     { id: 'objective', title: 'Objective' },
     ...game.sections.map((s) => ({ id: s.id, title: s.navTitle || s.title })),
@@ -242,6 +243,7 @@ export function gamePage(game, { prev, next }) {
     ${faqBlock(game)}
     ${cheatSheetBlock(game)}
     ${trackerBlock(game)}
+    ${relatedBlock(game, all, related)}
     ${sourcesBlock(game)}
 
     <nav class="pager" aria-label="More games">

@@ -436,3 +436,67 @@ describe('the privacy promise holds', () => {
     }
   });
 });
+
+describe('related games', () => {
+  // Internal links are how a visitor finds a second game and how ranking
+  // signal spreads between pages, so the block has to actually be there and
+  // actually point somewhere.
+  test('every game suggests other games that exist', () => {
+    for (const g of GAMES) {
+      const html = pages.find((p) => p.path.endsWith(`${g.slug}.html`)).html;
+      const start = html.indexOf('class="related');
+      assert.notEqual(start, -1, `${g.slug}: no related block`);
+      const list = html.slice(start, html.indexOf('</section>', start));
+      const hrefs = [...list.matchAll(/href="([^"]+)\.html"/g)].map((m) => m[1]);
+      assert.ok(hrefs.length >= 2, `${g.slug}: only ${hrefs.length} related games`);
+      for (const h of hrefs) {
+        assert.notEqual(h, g.slug, `${g.slug}: links to itself`);
+        assert.ok(GAMES.some((x) => x.slug === h), `${g.slug}: links to unknown game "${h}"`);
+      }
+      assert.equal(new Set(hrefs).size, hrefs.length, `${g.slug}: duplicate suggestion`);
+    }
+  });
+
+  test('every suggestion gives a concrete reason', () => {
+    for (const g of GAMES) {
+      const html = pages.find((p) => p.path.endsWith(`${g.slug}.html`)).html;
+      const whys = [...html.matchAll(/class="related__why">([^<]+)</g)].map((m) => m[1].trim());
+      assert.ok(whys.length >= 2, `${g.slug}: suggestions without reasons`);
+      for (const w of whys) {
+        assert.ok(w.length > 12, `${g.slug}: reason too thin — "${w}"`);
+        assert.doesNotMatch(w, /you might also like|related|similar game/i,
+          `${g.slug}: filler reason — "${w}"`);
+      }
+    }
+  });
+
+  test('suggestions are reciprocated often enough to form a network', () => {
+    // Not every pair needs to be mutual, but if almost none are, the graph is
+    // a set of dead ends rather than something a reader can wander through.
+    const links = new Map();
+    for (const g of GAMES) {
+      const html = pages.find((p) => p.path.endsWith(`${g.slug}.html`)).html;
+      const start = html.indexOf('class="related');
+      const list = html.slice(start, html.indexOf('</section>', start));
+      links.set(g.slug, new Set([...list.matchAll(/href="([^"]+)\.html"/g)].map((m) => m[1])));
+    }
+    let mutual = 0, total = 0;
+    for (const [from, tos] of links) for (const to of tos) {
+      total++;
+      if (links.get(to)?.has(from)) mutual++;
+    }
+    assert.ok(mutual / total > 0.4, `only ${mutual}/${total} suggestions are reciprocated`);
+  });
+
+  test('every game is reachable from at least one other game page', () => {
+    const linked = new Set();
+    for (const g of GAMES) {
+      const html = pages.find((p) => p.path.endsWith(`${g.slug}.html`)).html;
+      const start = html.indexOf('class="related');
+      const list = html.slice(start, html.indexOf('</section>', start));
+      for (const m of list.matchAll(/href="([^"]+)\.html"/g)) linked.add(m[1]);
+    }
+    const orphans = GAMES.map((g) => g.slug).filter((s) => !linked.has(s));
+    assert.deepEqual(orphans, [], `no game page links to: ${orphans.join(', ')}`);
+  });
+});
