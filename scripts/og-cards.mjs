@@ -11,6 +11,7 @@
 // size this ever renders at, and social crawlers screenshot it as-is.
 
 import { mkdir, writeFile, readFile, rm } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFile } from 'node:child_process';
@@ -100,11 +101,19 @@ async function shoot(html, out) {
   await writeFile(src, html);
   await run(CHROME, [
     '--headless', '--disable-gpu', '--hide-scrollbars',
+    // Without its own profile directory, headless Chrome contends with an
+    // already-running desktop Chrome for the default profile lock and hangs
+    // indefinitely — no error, no screenshot, just a live process. Isolating
+    // the profile makes the script independent of whether a browser is open.
+    `--user-data-dir=${join(tmpDir, 'chrome-profile')}`,
+    '--no-first-run', '--no-default-browser-check',
     '--force-device-scale-factor=1',
     '--window-size=1200,630',
     `--screenshot=${out}`,
     `file://${src}`,
-  ]);
+    // A hang is worse than a failure: it stalls the whole run with no output.
+  ], { timeout: 30_000 });
+  if (!existsSync(out)) throw new Error(`Chrome produced no image for ${out}`);
 }
 
 async function main() {
