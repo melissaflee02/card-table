@@ -4,6 +4,10 @@ export default {
   suit: '♦',
   aliases: ['Cabo', 'Pablo', 'Cactus'],
   tagline: 'Lowest hand wins — but you only ever saw two of your four cards.',
+  reviewed: '2026-09-08',
+  sources: [
+    { name: 'Pagat — Golf (Cambio/Cabo variants)', url: 'https://www.pagat.com/draw/golf.html' },
+  ],
   players: { min: 2, max: 6, best: '3–6' },
   time: { min: 10, max: 20 },
   difficulty: 'easy',

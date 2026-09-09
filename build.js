@@ -48,6 +48,21 @@ function validate(game, index) {
     throw new Error(`${where}: players has both best and note — pick one`);
   }
   if (game.time.min > game.time.max) throw new Error(`${where}: time.min > time.max`);
+  // A rules site lives on trust; a citation that 404s or points nowhere is worse
+  // than none, so the shape is enforced even though the URLs are checked by hand.
+  if (game.sources) {
+    if (!Array.isArray(game.sources) || !game.sources.length) {
+      throw new Error(`${where}: sources must be a non-empty array`);
+    }
+    for (const s of game.sources) {
+      if (!s.name || !/^https:\/\//.test(s.url || '')) {
+        throw new Error(`${where}: every source needs a name and an https url`);
+      }
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(game.reviewed || '')) {
+      throw new Error(`${where}: sources require a reviewed date as YYYY-MM-DD`);
+    }
+  }
   if (!['easy', 'medium'].includes(game.difficulty)) {
     throw new Error(`${where}: difficulty must be "easy" or "medium"`);
   }
@@ -120,6 +135,34 @@ function checkMeta(html, where) {
   return html;
 }
 
+/**
+ * Cheap markup lint over the emitted HTML. Both of these shipped once and were
+ * only caught by an external validator, so they are checked on every build.
+ */
+function checkMarkup(html, where) {
+  // SVG presentation attributes take 100-900 in hundreds. font-weight="650" is
+  // valid CSS but invalid as an attribute, and the diagrams are hand-written.
+  for (const m of html.matchAll(/font-weight="(\d+)"/g)) {
+    const w = Number(m[1]);
+    if (w % 100 !== 0 || w < 100 || w > 900) {
+      throw new Error(
+        `${where}: font-weight="${m[1]}" is not valid as an SVG attribute — use a multiple of 100`
+      );
+    }
+  }
+  // aria-label only names elements whose role supports naming. On a bare span or
+  // div it is dropped by screen readers, so the label silently does nothing.
+  const generic = /<(span|div)\b(?![^>]*\brole=)[^>]*\saria-label=/g;
+  const hit = generic.exec(html);
+  if (hit) {
+    throw new Error(
+      `${where}: aria-label on a <${hit[1]}> with no role — it names nothing.\n` +
+      `  Use aria-hidden on the glyph plus a .sr-only span, or give it a role.`
+    );
+  }
+  return html;
+}
+
 async function copyAssets() {
   // Recursive: src/assets now contains a fonts/ directory.
   const walk = async (from, to) => {
@@ -186,7 +229,7 @@ async function build() {
   await rm(dist, { recursive: true, force: true });
   await mkdir(join(dist, 'games'), { recursive: true });
 
-  await writeFile(join(dist, 'index.html'), checkMeta(homePage(GAMES, PLANNED), 'index.html'));
+  await writeFile(join(dist, 'index.html'), checkMarkup(checkMeta(homePage(GAMES, PLANNED), 'index.html'), 'index.html'));
 
   for (const [i, game] of GAMES.entries()) {
     const prev = GAMES[i - 1] ?? GAMES[GAMES.length - 1];
@@ -198,7 +241,7 @@ async function build() {
     if (html.includes('undefined')) {
       throw new Error(`${game.slug}: rendered HTML contains "undefined" — check the data file`);
     }
-    await writeFile(join(dist, 'games', `${game.slug}.html`), checkMeta(html, `games/${game.slug}.html`));
+    await writeFile(join(dist, 'games', `${game.slug}.html`), checkMarkup(checkMeta(html, `games/${game.slug}.html`), `games/${game.slug}.html`));
   }
 
   // --- Crawler files -------------------------------------------------------
@@ -224,6 +267,10 @@ async function build() {
     title: 'Page not found',
     description: 'That page does not exist. Browse all the card games instead.',
     path: '404.html',
+    // GitHub Pages serves this file for unknown paths with a 404 status, but the
+    // literal /404.html URL is a real file and answers 200 — so without this it
+    // can be crawled and indexed as an ordinary page.
+    noindex: true,
     base: `${SITE.origin}/`,
     bodyClass: 'page-home',
     body: `<div class="wrap"><section class="hero"><div class="hero__copy">

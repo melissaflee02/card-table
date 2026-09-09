@@ -86,6 +86,28 @@ function hintsBlock(game) {
   </section>`;
 }
 
+// The footer claims rules are cross-checked against multiple sources; without
+// naming them that is just an assertion. Only sources verified to cover this
+// specific game are listed — Cheat and the Palace/Cambio family are not on
+// Bicycle, so they cite Pagat alone rather than padding the list.
+function sourcesBlock(game) {
+  if (!game.sources?.length) return '';
+  const reviewed = new Date(`${game.reviewed}T00:00:00Z`).toLocaleDateString('en-GB', {
+    day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+  });
+  return `
+  <aside class="sources" aria-labelledby="sources-heading">
+    <h2 id="sources-heading">Where these rules come from</h2>
+    <p>Cross-checked against the references below. Where they genuinely disagree,
+       the difference is listed under <a href="#house-rules">House rules</a>
+       rather than settled here.</p>
+    <ul>${game.sources.map((src) => `
+      <li><a href="${esc(src.url)}" rel="nofollow noopener" target="_blank">${esc(src.name)}</a></li>`).join('')}
+    </ul>
+    <p class="sources__reviewed">Last reviewed <time datetime="${esc(game.reviewed)}">${esc(reviewed)}</time>.</p>
+  </aside>`;
+}
+
 function faqBlock(game) {
   if (!game.faq?.length) return '';
   return `
@@ -220,6 +242,7 @@ export function gamePage(game, { prev, next }) {
     ${faqBlock(game)}
     ${cheatSheetBlock(game)}
     ${trackerBlock(game)}
+    ${sourcesBlock(game)}
 
     <nav class="pager" aria-label="More games">
       ${prev ? `<a class="pager__link" href="${esc(prev.slug)}.html"><span>Previous</span><strong>${esc(prev.name)}</strong></a>` : '<span></span>'}

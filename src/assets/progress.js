@@ -51,9 +51,13 @@
       ring.classList.toggle('is-complete', finished);
       if (tick) tick.hidden = !finished;
       if (count) count.hidden = finished;
+      // title mirrors aria-label so the hover tooltip explains the ring too —
+      // "0/2" alone reads as a mystery on the homepage game cards.
+      var label = done + ' of ' + total + ' practice drills completed' +
+        (finished ? ' — all done' : '');
       ring.setAttribute('role', 'img');
-      ring.setAttribute('aria-label',
-        done + ' of ' + total + ' drills completed' + (finished ? ' — all done' : ''));
+      ring.setAttribute('aria-label', label);
+      ring.setAttribute('title', label);
     }
   }
 

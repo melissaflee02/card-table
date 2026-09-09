@@ -58,13 +58,19 @@ const cardLabel = (face) => {
 /** Progress ring. Filled client-side from saved drill completions. */
 export function progressRing(slug, total, { size = 'md' } = {}) {
   if (!total) return '';
-  return `<span class="ring ring--${size}" data-ring data-ring-game="${esc(slug)}" data-total="${total}">
+  // On the homepage the ring sits alone inside a game-card link, where a bare
+  // "0/2" says nothing — it could be players, sections or rounds. role="img"
+  // plus a name is rendered here rather than left to progress.js so the ring is
+  // still explained with JS disabled; title gives sighted users the same on hover.
+  const label = `0 of ${total} practice drills completed`;
+  return `<span class="ring ring--${size}" data-ring data-ring-game="${esc(slug)}" data-total="${total}"
+        role="img" aria-label="${esc(label)}" title="${esc(label)}">
     <svg viewBox="0 0 36 36" aria-hidden="true">
       <circle class="ring__track" cx="18" cy="18" r="15.5"/>
       <circle class="ring__fill" cx="18" cy="18" r="15.5"/>
     </svg>
-    <span class="ring__count" data-ring-count>0/${total}</span>
-    <span class="ring__done" data-ring-done hidden>✓</span>
+    <span class="ring__count" data-ring-count aria-hidden="true">0/${total}</span>
+    <span class="ring__done" data-ring-done hidden aria-hidden="true">✓</span>
   </span>`;
 }
 
@@ -146,7 +152,10 @@ export function drills(game) {
       <header class="drill__head">
         <p class="drill__step">Drill ${i + 1} of ${total}</p>
         <h3 class="drill__title">${esc(d.title)}</h3>
-        <span class="drill__check" data-drill-check hidden aria-label="Completed">✓</span>
+        <!-- aria-label needs a role that supports naming; a bare span has none,
+             so the label was silently dropped by screen readers and flagged by
+             the validator. Hide the glyph and carry the word in real text. -->
+        <span class="drill__check" data-drill-check hidden><span aria-hidden="true">✓</span><span class="sr-only">Completed</span></span>
       </header>
       <p class="drill__prompt">${esc(d.prompt)}</p>
       <ul class="drill__options">

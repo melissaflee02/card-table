@@ -17,6 +17,7 @@ if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;}catch(e){}}
 export function layout({
   title, description, body, base = '', scripts = [], bodyClass = '', page = '',
   path = '', jsonLd = null, ogImage: ogImagePath = 'assets/og-card.png', ogImageAlt = '',
+  noindex = false,
 }) {
   const fullTitle = title ? `${title} — ${SITE.name}` : `${SITE.name} — ${SITE.tagline}`;
   const canonical = `${SITE.origin}/${path}`.replace(/\/+$/, '/').replace(/([^:])\/\//g, '$1/');
@@ -33,6 +34,7 @@ export function layout({
 <title>${esc(fullTitle)}</title>
 <meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${esc(canonical)}">
+${noindex ? '<meta name="robots" content="noindex, follow">' : ''}
 <meta property="og:site_name" content="${esc(SITE.name)}">
 <meta property="og:title" content="${esc(fullTitle)}">
 <meta property="og:description" content="${esc(description)}">

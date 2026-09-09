@@ -4,6 +4,10 @@ export default {
   suit: '♠',
   aliases: ['Shithead', 'Karma', 'Shed'],
   tagline: 'Get rid of every card. Three of them are face down and you have no idea what they are.',
+  reviewed: '2026-09-08',
+  sources: [
+    { name: 'Pagat — Shithead', url: 'https://www.pagat.com/beating/shithead.html' },
+  ],
   players: { min: 2, max: 6, best: '3–5' },
   time: { min: 10, max: 20 },
   difficulty: 'easy',

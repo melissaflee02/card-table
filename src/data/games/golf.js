@@ -4,6 +4,11 @@ export default {
   suit: '♣',
   aliases: ['Six-Card Golf', 'Polish Polka'],
   tagline: 'Nine rounds, lowest score wins. Kings are free and twos are better than free.',
+  reviewed: '2026-09-08',
+  sources: [
+    { name: 'Pagat — Golf', url: 'https://www.pagat.com/draw/golf.html' },
+    { name: 'Bicycle — Six-Card Golf', url: 'https://bicyclecards.com/how-to-play/six-card-golf' },
+  ],
   players: { min: 2, max: 4, best: '3–4' },
   time: { min: 20, max: 30 },
   difficulty: 'easy',

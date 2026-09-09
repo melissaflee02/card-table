@@ -4,6 +4,11 @@ export default {
   suit: '♥',
   aliases: ['Gin', 'Rummy (2-player)'],
   tagline: 'Two players, ten cards each, and one long argument with the discard pile.',
+  reviewed: '2026-09-08',
+  sources: [
+    { name: 'Pagat — Gin Rummy', url: 'https://www.pagat.com/rummy/ginrummy.html' },
+    { name: 'Bicycle — Gin Rummy', url: 'https://bicyclecards.com/how-to-play/gin-rummy' },
+  ],
   players: { min: 2, max: 2 },
   time: { min: 15, max: 30 },
   difficulty: 'medium',

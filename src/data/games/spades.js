@@ -4,6 +4,11 @@ export default {
   suit: '♠',
   aliases: ['Call Bridge'],
   tagline: 'Bid what you think you can take, then take exactly that. Greed is punished twice.',
+  reviewed: '2026-09-08',
+  sources: [
+    { name: 'Pagat — Spades', url: 'https://www.pagat.com/boston/spades.html' },
+    { name: 'Bicycle — Spades', url: 'https://bicyclecards.com/how-to-play/spades' },
+  ],
   players: { min: 4, max: 4, note: 'two partnerships' },
   time: { min: 30, max: 45 },
   difficulty: 'medium',

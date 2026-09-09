@@ -656,7 +656,11 @@ p.callout { padding: 1rem 1.2rem; }
 .cheatsheet__card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md); }
 .cheatsheet__title { padding: 1.1rem 1.35rem; background: var(--accent-solid); color: var(--accent-on-solid); }
 .cheatsheet__title h3 { margin: 0; font-size: 1.15rem; color: inherit; }
-.cheatsheet__title p { margin: .15rem 0 0; font-size: .85rem; opacity: .85; }
+/* No opacity here. --accent-on-solid on --accent-solid is only 5.02:1 in dark
+   mode, so dimming to 85% dropped this subtitle to 4.13:1 — and because the
+   fade happens in CSS, the palette gate cannot see it. The smaller size and
+   lighter weight already separate it from the h3. */
+.cheatsheet__title p { margin: .15rem 0 0; font-size: .85rem; }
 .cheatsheet__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border-top: 1px solid var(--border); }
 .cheatsheet__cell { padding: 1.1rem 1.35rem; background: var(--surface); font-size: .925rem; }
 .cheatsheet__cell h4 { color: var(--accent-on-soft); margin-bottom: .5rem; }
@@ -711,3 +715,21 @@ p.callout { padding: 1rem 1.2rem; }
   .filters { padding: 1rem; gap: 1rem 1.25rem; }
   .results { margin-top: 1.75rem; }
 }
+
+/* ---------- Provenance ---------- */
+
+/* Sits after the tools, not in the anchor nav: it is a trust signal for anyone
+   who wants to check the work, not a step in learning the game. */
+.sources {
+  margin-top: 3rem; padding: 1.4rem 1.5rem;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); font-size: .9rem; color: var(--text-muted);
+}
+.sources h2 {
+  margin: 0 0 .5rem; font-size: .72rem; font-weight: 700;
+  letter-spacing: .09em; text-transform: uppercase; color: var(--text-muted);
+}
+.sources p { margin: 0 0 .7rem; max-width: 62ch; }
+.sources ul { margin: 0 0 .7rem; padding-left: 1.1rem; }
+.sources li { margin-bottom: .25rem; }
+.sources__reviewed { margin: 0; font-size: .82rem; }

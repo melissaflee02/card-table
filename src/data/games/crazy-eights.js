@@ -4,6 +4,11 @@ export default {
   suit: '♦',
   aliases: ['Eights', 'Switch', 'Mau Mau'],
   tagline: 'Match the suit or the rank. Eights are wild, and everyone always argues about the extras.',
+  reviewed: '2026-09-08',
+  sources: [
+    { name: 'Pagat — Crazy Eights', url: 'https://www.pagat.com/eights/crazy8s.html' },
+    { name: 'Bicycle — Crazy Eights', url: 'https://bicyclecards.com/how-to-play/crazy-eights' },
+  ],
   players: { min: 2, max: 8, best: '3–5' },
   time: { min: 10, max: 20 },
   difficulty: 'easy',

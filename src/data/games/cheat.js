@@ -4,6 +4,10 @@ export default {
   suit: '♥',
   aliases: ['BS', 'Bullshit', 'I Doubt It'],
   tagline: 'Everything is played face down, so nothing you are told is necessarily true.',
+  reviewed: '2026-09-08',
+  sources: [
+    { name: 'Pagat — Cheat', url: 'https://www.pagat.com/beating/cheat.html' },
+  ],
   players: { min: 3, max: 8, best: '4–6' },
   time: { min: 15, max: 25 },
   difficulty: 'easy',

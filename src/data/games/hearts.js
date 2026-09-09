@@ -4,6 +4,11 @@ export default {
   suit: '♥',
   aliases: ['Black Lady', 'Black Maria'],
   tagline: 'A trick-taking game you win by losing. Avoid the hearts. Really avoid the Queen of Spades.',
+  reviewed: '2026-09-08',
+  sources: [
+    { name: 'Pagat — Hearts', url: 'https://www.pagat.com/reverse/hearts.html' },
+    { name: 'Bicycle — Hearts', url: 'https://bicyclecards.com/how-to-play/hearts' },
+  ],
   players: { min: 3, max: 5, best: '4' },
   time: { min: 25, max: 40 },
   difficulty: 'medium',

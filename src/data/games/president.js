@@ -4,6 +4,11 @@ export default {
   suit: '♣',
   aliases: ['Scum', 'Kings and Assholes', 'Bum', 'Landlord'],
   tagline: 'Shed your cards, climb the social ladder, and make last place hand over their best card.',
+  reviewed: '2026-09-08',
+  sources: [
+    { name: 'Pagat — President', url: 'https://www.pagat.com/climbing/president.html' },
+    { name: 'Bicycle — Presidents', url: 'https://bicyclecards.com/how-to-play/presidents' },
+  ],
   players: { min: 4, max: 7, best: '5–6' },
   time: { min: 20, max: 40 },
   difficulty: 'easy',

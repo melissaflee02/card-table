@@ -423,7 +423,7 @@ const BUILDERS = {
     const box = (y, text, tone) => `
       <rect x="0" y="${y}" width="${P}" height="${boxH}" rx="7"
             fill="${tone}" stroke="var(--card-border)" stroke-width="1"/>
-      <text x="${P / 2}" y="${y + 21}" font-size="12.5" font-weight="650"
+      <text x="${P / 2}" y="${y + 21}" font-size="12.5" font-weight="600"
             fill="var(--diagram-ink)" text-anchor="middle">${esc(text)}</text>`;
 
     const panel = (ox, high, low, give, back) => `
@@ -431,12 +431,12 @@ const BUILDERS = {
         ${box(topY, high, 'var(--diagram-good-bg)')}
         ${box(botY, low, 'var(--diagram-warn-bg)')}
         ${arrow(40, botY - 8, 40, topY + boxH + 8, aid)}
-        <text x="50" y="${(topY + boxH + botY) / 2 - 8}" font-size="10.5" font-weight="650"
+        <text x="50" y="${(topY + boxH + botY) / 2 - 8}" font-size="10.5" font-weight="600"
               fill="var(--diagram-ink)">${esc(give)}</text>
         <text x="50" y="${(topY + boxH + botY) / 2 + 5}" font-size="9.5"
               fill="var(--diagram-muted)">forced</text>
         ${arrow(P - 40, topY + boxH + 8, P - 40, botY - 8, aid, true)}
-        <text x="${P - 50}" y="${(topY + boxH + botY) / 2 + 24}" font-size="10.5" font-weight="650"
+        <text x="${P - 50}" y="${(topY + boxH + botY) / 2 + 24}" font-size="10.5" font-weight="600"
               fill="var(--diagram-ink)" text-anchor="end">${esc(back)}</text>
         <text x="${P - 50}" y="${(topY + boxH + botY) / 2 + 37}" font-size="9.5"
               fill="var(--diagram-muted)" text-anchor="end">their choice</text>
