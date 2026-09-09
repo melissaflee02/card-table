@@ -19,8 +19,8 @@ export const COLLECTIONS = [
     title: 'Card Games for Two Players',
     heading: 'The best card games for two players',
     description:
-      'Five card games that genuinely work with two people — what each one is good at, how long it takes, and which to learn first.',
-    lede: 'Most card games are built for a table. These five are good with exactly two, and two of them are among the best two-player games there are.',
+      'Six card games that genuinely work with two people — what each one is good at, how long it takes, and which to learn first.',
+    lede: 'Most card games are built for a table. These six are good with exactly two, and two of them are among the best two-player games there are.',
     updated: UPDATED,
     // Every pick is checked against this at build time.
     requires: { players: 2 },
@@ -44,6 +44,11 @@ export const COLLECTIONS = [
         slug: 'cribbage',
         verdict: 'The one to learn if you will play it often',
         why: 'The deepest game here by a distance, and built for exactly two. Every discard is a real decision because two of your six cards go into a hand your opponent may end up scoring. The only pick on this list that wants a board — though pen and paper, or the tracker on its page, does the job.',
+      },
+      {
+        slug: 'rummy-500',
+        verdict: 'The forgiving alternative to Gin',
+        why: 'At two players you each get thirteen cards and the discard pile grows deep, which is exactly where this game is interesting — you can reach down into it for a card you can use. Looser and more forgiving than Gin Rummy, and a better first rummy if neither of you has played one.',
       },
       {
         slug: 'golf',
@@ -78,8 +83,8 @@ export const COLLECTIONS = [
     title: 'Card Games for 3 Players',
     heading: 'Card games that actually work with three',
     description:
-      'Three is the awkward number for card games. Six that genuinely work with three players, including which ones need a card removed from the deck first.',
-    lede: 'Three is the awkward number. Partnership games are out, and a lot of classics quietly assume four. These six are fine with three — one of them needs a card removed first.',
+      'Three is the awkward number for card games. Seven that genuinely work with three players, including which ones need a card removed from the deck first.',
+    lede: 'Three is the awkward number. Partnership games are out, and a lot of classics quietly assume four. These seven are fine with three — one of them needs a card removed first.',
     updated: UPDATED,
     requires: { players: 3 },
     intro: [
@@ -107,6 +112,11 @@ export const COLLECTIONS = [
         slug: 'palace',
         verdict: 'Best for chaos',
         why: 'Three is inside the sweet spot. The pile builds fast enough to hurt, there is still someone to dump a pick-up on, and the face-down endgame produces the same disasters it does with five.',
+      },
+      {
+        slug: 'rummy-500',
+        verdict: 'Best if you want a longer sit-down',
+        why: 'Three is a good number for it: enough players that the discard pile builds up between your turns, few enough that one deck is plenty. It is also the only game here you can lay cards onto other people\'s melds, which keeps you watching the table rather than just your hand.',
       },
       {
         slug: 'cambio',
@@ -138,7 +148,7 @@ export const COLLECTIONS = [
     heading: 'Card games for six or more',
     description:
       'Card games that hold up with six, seven or eight players — including which ones need a second deck and which get slow at the top of their range.',
-    lede: 'Most card games quietly stop working above five. These five handle a crowd — two of them all the way to eight.',
+    lede: 'Most card games quietly stop working above five. These six handle a crowd — two of them all the way to eight.',
     updated: UPDATED,
     requires: { players: 6 },
     intro: [
@@ -166,6 +176,11 @@ export const COLLECTIONS = [
         slug: 'president',
         verdict: 'Best at 5–6',
         why: 'Built for a crowd: the whole point is the social ranking, which needs enough people to have a middle. Seven works but hands get short and the card exchange starts to decide too much. This is the one to play if the group is staying for several rounds.',
+      },
+      {
+        slug: 'rummy-500',
+        verdict: 'Up to 8, but bring a second deck',
+        why: 'Handles a big table better than most, because laying off onto other people\'s melds gives you something to think about while you wait. Above four players you need two decks shuffled together — one deals too thin and the discard pile never gets deep enough to matter.',
       },
       {
         slug: 'palace',
