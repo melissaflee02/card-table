@@ -30,6 +30,7 @@ const TAG_LABELS = {
   melds: 'Melds & runs',
   memory: 'Memory',
   counting: 'Counting',
+  reflex: 'Speed & reflex',
   bluffing: 'Bluffing',
   party: 'Party',
 };

@@ -83,8 +83,8 @@ export const COLLECTIONS = [
     title: 'Card Games for 3 Players',
     heading: 'Card games that actually work with three',
     description:
-      'Three is the awkward number for card games. Seven that genuinely work with three players, including which ones need a card removed from the deck first.',
-    lede: 'Three is the awkward number. Partnership games are out, and a lot of classics quietly assume four. These seven are fine with three — one of them needs a card removed first.',
+      'Three is the awkward number for card games. Eight that genuinely work with three players, including which ones need a card removed from the deck first.',
+    lede: 'Three is the awkward number. Partnership games are out, and a lot of classics quietly assume four. These eight are fine with three — one of them needs a card removed first.',
     updated: UPDATED,
     requires: { players: 3 },
     intro: [
@@ -129,6 +129,11 @@ export const COLLECTIONS = [
         why: 'Nothing in Golf depends on the number of opponents; you are mostly playing against your own layout. That makes three exactly as good as four, and it is the calmest game here if you want to talk while you play.',
       },
       {
+        slug: 'spoons',
+        verdict: 'Works at three, but wants more',
+        why: 'Three players and two spoons is a real game and takes about a minute to teach. It is included with a caveat: the scramble is the whole point, and with only one person missing out each round there is much less of one. If a fourth turns up, play this.',
+      },
+      {
         slug: 'crazy-eights',
         verdict: 'The no-explanation option',
         why: 'Three is enough for the suit-changing to matter — you can strand the player after you in a suit they clearly do not hold. Takes about a minute to teach to someone who has never played a card game.',
@@ -148,7 +153,7 @@ export const COLLECTIONS = [
     heading: 'Card games for six or more',
     description:
       'Card games that hold up with six, seven or eight players — including which ones need a second deck and which get slow at the top of their range.',
-    lede: 'Most card games quietly stop working above five. These six handle a crowd — two of them all the way to eight.',
+    lede: 'Most card games quietly stop working above five. These seven handle a crowd — two of them all the way to eight.',
     updated: UPDATED,
     requires: { players: 6 },
     intro: [
@@ -163,8 +168,13 @@ export const COLLECTIONS = [
     ],
     picks: [
       {
+        slug: 'spoons',
+        verdict: 'Start here — up to 10',
+        why: 'The only game here with no turns at all: everyone passes cards at the same time, continuously, so nobody is ever sat waiting. It scales further than anything else on this list and gets better the more people are reaching for the same spoon. Bring spoons — one fewer than there are players.',
+      },
+      {
         slug: 'cheat',
-        verdict: 'Start here — up to 8',
+        verdict: 'Also excellent — up to 8',
         why: 'The only game here where you are fully involved on other people’s turns, because anyone may call at any time. A big table makes it better, not worse: more people means more claims to doubt and a bigger pile to inflict on whoever gets caught.',
       },
       {
@@ -206,8 +216,8 @@ export const COLLECTIONS = [
     title: 'Easy Card Games for Beginners',
     heading: 'Easy card games anyone can learn in five minutes',
     description:
-      'Six card games with rules simple enough to teach at the table, ranked by how quickly a complete beginner can start playing.',
-    lede: 'Six games you can teach in the time it takes to deal them — ordered by how little explaining they need.',
+      'Seven card games with rules simple enough to teach at the table, ranked by how quickly a complete beginner can start playing.',
+    lede: 'Seven games you can teach in the time it takes to deal them — ordered by how little explaining they need.',
     updated: UPDATED,
     requires: { difficulty: 'easy' },
     intro: [
@@ -225,6 +235,11 @@ export const COLLECTIONS = [
         slug: 'crazy-eights',
         verdict: 'Easiest to teach',
         why: 'One sentence: match the suit or the number, and eights are wild. Everything else can be explained as it comes up. This is the game to reach for when someone at the table has genuinely never played cards.',
+      },
+      {
+        slug: 'spoons',
+        verdict: 'No rules to learn at all',
+        why: 'Collect four of the same number, take a spoon. There are no card values, no scoring and no turn order to explain — a child can join halfway through a round and be fine. The only thing worth saying out loud beforehand is that once one spoon goes, everybody grabs.',
       },
       {
         slug: 'cheat',
