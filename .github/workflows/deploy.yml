@@ -27,8 +27,12 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Build
-        run: npm run build
+      # `npm test` builds first, then asserts on the generated site: link
+      # integrity, unique titles and descriptions, sitemap coverage, valid
+      # markup, and the accessibility invariants. A failure here stops the
+      # deploy, so a broken page never reaches production.
+      - name: Build and verify
+        run: npm test
 
       - uses: actions/configure-pages@v6
 

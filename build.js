@@ -5,7 +5,7 @@
 import { mkdir, rm, writeFile, readFile, readdir, copyFile, rename } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { GAMES, PLANNED } from './src/data/index.js';
 import { ACTIVE, THEMES, themeCss } from './src/data/themes/index.js';
@@ -19,7 +19,7 @@ const dist = join(root, 'dist');
 const REQUIRED = ['slug', 'name', 'tagline', 'players', 'time', 'difficulty', 'deck', 'objective', 'sections'];
 
 // Fail loudly on a malformed game rather than shipping a page with holes in it.
-function validate(game, index) {
+export function validate(game, index) {
   const where = `games[${index}] (${game.slug || game.name || 'unnamed'})`;
   for (const key of REQUIRED) {
     if (game[key] === undefined || game[key] === null) {
@@ -121,7 +121,7 @@ function validate(game, index) {
  * a build failure instead of a snippet that silently trails off mid-sentence.
  */
 const META_MAX = 160;
-function checkMeta(html, where) {
+export function checkMeta(html, where) {
   const m = html.match(/<meta name="description" content="([^"]*)"/);
   if (!m) throw new Error(`${where}: no meta description`);
   const text = m[1]
@@ -139,7 +139,7 @@ function checkMeta(html, where) {
  * Cheap markup lint over the emitted HTML. Both of these shipped once and were
  * only caught by an external validator, so they are checked on every build.
  */
-function checkMarkup(html, where) {
+export function checkMarkup(html, where) {
   // SVG presentation attributes take 100-900 in hundreds. font-weight="650" is
   // valid CSS but invalid as an attribute, and the diagrams are hand-written.
   for (const m of html.matchAll(/font-weight="(\d+)"/g)) {
@@ -294,7 +294,16 @@ async function build() {
   for (const g of GAMES) console.log(`  games/${g.slug}.html  ${g.name}`);
 }
 
-build().catch((err) => {
-  console.error(`\nBuild failed: ${err.message}\n`);
-  process.exit(1);
-});
+// Only build when run directly (`node build.js`). The test suite imports the
+// guards above and must not kick off a build just by importing them.
+const isEntryPoint = process.argv[1]
+  && pathToFileURL(process.argv[1]).href === import.meta.url;
+
+if (isEntryPoint) {
+  build().catch((err) => {
+    console.error(`\nBuild failed: ${err.message}\n`);
+    process.exit(1);
+  });
+}
+
+export { build };

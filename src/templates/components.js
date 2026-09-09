@@ -123,7 +123,7 @@ export function cardLibrary(game) {
 // (asset fingerprinting hashes this output, so a fresh random order every build
 // would churn the hashes). The seed is the game slug + drill id, so a given
 // drill always lands the same way but different drills land differently.
-function seededOrder(seed, length) {
+export function seededOrder(seed, length) {
   let h = 2166136261;
   for (let i = 0; i < seed.length; i++) {
     h ^= seed.charCodeAt(i);
