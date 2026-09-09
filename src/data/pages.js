@@ -14,16 +14,16 @@ export const PAGES = [
   {
     slug: 'about',
     title: 'About',
-    heading: 'About Card Table',
+    heading: 'About Deck & Table',
     description:
-      'Who makes Card Table, how the rules are chosen and checked, and what to do when a ruleset disagrees with how your table plays.',
+      'Who makes Deck & Table, how the rules are chosen and checked, and what to do when a ruleset disagrees with how your table plays.',
     lede: 'A free reference for the card games people actually play — built to settle an argument in under a minute, not to be read end to end.',
     updated: UPDATED,
     blocks: [
       { type: 'h2', text: 'What this is', id: 'what' },
       {
         type: 'p',
-        text: 'Card Table is a rules reference for classic card games. Every game has the setup, the turn order, the scoring, the arguments people actually have, a printable cheat sheet and a scorekeeper. There are no accounts, no adverts, no pop-ups and no newsletter.',
+        text: 'Deck & Table is a rules reference for classic card games. Every game has the setup, the turn order, the scoring, the arguments people actually have, a printable cheat sheet and a scorekeeper. There are no accounts, no adverts, no pop-ups and no newsletter.',
       },
       {
         type: 'p',
@@ -69,7 +69,7 @@ export const PAGES = [
       { type: 'h2', text: 'Who makes it', id: 'who' },
       {
         type: 'p',
-        text: `Card Table is made and maintained by one person. The whole site is open source — you can read every line of it, including the rules content, [on GitHub](${SITE.repo}).`,
+        text: `Deck & Table is made and maintained by one person. The whole site is open source — you can read every line of it, including the rules content, [on GitHub](${SITE.repo}).`,
       },
       {
         type: 'p',
@@ -82,14 +82,14 @@ export const PAGES = [
     slug: 'privacy',
     title: 'Privacy',
     description:
-      'Card Table collects nothing. No accounts, no cookies, no analytics, no tracking. Your scores and practice progress stay in your own browser.',
+      'Deck & Table collects nothing. No accounts, no cookies, no analytics, no tracking. Your scores and practice progress stay in your own browser.',
     lede: 'Short version: nothing you do here is sent anywhere. There is no server to send it to.',
     updated: UPDATED,
     blocks: [
       { type: 'h2', text: 'What is collected', id: 'collected' },
       {
         type: 'p',
-        text: 'Nothing. Card Table is a set of static files. There is no account system, no database, no login, no contact form and no back end that could receive your data.',
+        text: 'Nothing. Deck & Table is a set of static files. There is no account system, no database, no login, no contact form and no back end that could receive your data.',
       },
       {
         type: 'ul',
@@ -141,7 +141,7 @@ export const PAGES = [
       { type: 'h2', text: 'Children', id: 'children' },
       {
         type: 'p',
-        text: 'Card Table is suitable for all ages and collects no personal information from anyone, including children.',
+        text: 'Deck & Table is suitable for all ages and collects no personal information from anyone, including children.',
       },
 
       { type: 'h2', text: 'Changes', id: 'changes' },

@@ -1,4 +1,4 @@
-# Card Table
+# Deck & Table
 
 Clear, printable rules for the card games people actually play. Static site,
 no dependencies, no tracking, no build tooling beyond Node itself.

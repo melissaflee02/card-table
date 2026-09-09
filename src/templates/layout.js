@@ -2,18 +2,18 @@ import { esc } from './escape.js';
 import { brandMark } from './components.js';
 
 export const SITE = {
-  name: 'Card Table',
+  name: 'Deck & Table',
   tagline: 'Clear rules for the card games people actually play.',
   // Canonical origin. Update if the site moves to its own domain — sitemap,
   // canonical tags, Open Graph and JSON-LD all derive from this.
-  origin: 'https://melissaflee02.github.io/card-table',
+  origin: 'https://deckandtable.com',
   locale: 'en_GB',
 
   // Contact. Set contactEmail once a domain exists (e.g. 'hello@cardtable.xyz')
   // and every "report a rules problem" link switches to it automatically.
   // Until then the issue tracker is the working route — better a real one than
   // a published address that bounces.
-  contactEmail: '',
+  contactEmail: 'hello@deckandtable.com',
   repo: 'https://github.com/melissaflee02/card-table',
 
   // Search-engine ownership tokens. A list rather than one value because a

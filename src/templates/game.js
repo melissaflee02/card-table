@@ -254,9 +254,13 @@ export function gamePage(game, { prev, next, all = [], related }) {
   </div>
 </article>`;
 
-  // Title mirrors how people actually search: "how to play <game>". Kept
-  // short so the useful half survives Google's ~60-character truncation.
-  const facets = game.scoring ? 'Rules, Setup & Scoring' : 'Rules & Setup';
+  // Title mirrors how people actually search: "how to play <game>". Google
+  // truncates around 60 characters, and the brand suffix eats a fixed chunk of
+  // that, so the facet list gives ground as the game name grows rather than
+  // letting "Crazy Eights" push "Scoring" off the end of the result.
+  const titleBudget = 60 - `How to Play ${game.name}: ` .length - ` — ${SITE.name}`.length;
+  const facets = [game.scoring ? 'Rules, Setup & Scoring' : 'Rules & Setup', 'Rules & Setup', 'Rules']
+    .find((f) => f.length <= titleBudget) ?? 'Rules';
 
   const jsonLd = {
     '@context': 'https://schema.org',

@@ -145,12 +145,18 @@ describe('internal links and anchors resolve', () => {
 });
 
 describe('search metadata', () => {
-  test('every page has a unique, sensible title', () => {
+  test('every page has a unique title inside Google\'s display limit', () => {
+    // Measured decoded: "&amp;" is five characters in the source and one on
+    // screen, so counting the raw string overstates every title with an
+    // ampersand — which, with a brand like "Deck & Table", is all of them.
+    const decode = (s) => s.replace(/&amp;/g, '&').replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
     const titles = pages.map(({ path, html }) => {
-      const t = attr(html, /<title>([^<]*)<\/title>/);
-      assert.ok(t, `${path} has no title`);
-      assert.ok(t.length <= 65, `${path}: title is ${t.length} chars — "${t}"`);
-      return t;
+      const raw = attr(html, /<title>([^<]*)<\/title>/);
+      assert.ok(raw, `${path} has no title`);
+      const t = decode(raw);
+      assert.ok(t.length <= 60, `${path}: title is ${t.length} chars, Google cuts at ~60 — "${t}"`);
+      return raw;
     });
     assert.equal(new Set(titles).size, titles.length, 'duplicate <title> across pages');
   });

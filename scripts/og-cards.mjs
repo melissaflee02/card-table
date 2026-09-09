@@ -18,6 +18,7 @@ import { promisify } from 'node:util';
 
 import { GAMES } from '../src/data/index.js';
 import { THEMES, ACTIVE } from '../src/data/themes/index.js';
+import { SITE } from '../src/templates/layout.js';
 import { deckLabel } from '../src/templates/components.js';
 import { playerLabel, timeLabel } from '../src/templates/game.js';
 
@@ -81,7 +82,7 @@ h1{font-size:${titleSize}px;font-weight:800;line-height:1.02;letter-spacing:-.03
 .red{color:${t.cardInkRed}}
 </style></head><body>
   <div class="copy">
-    <div class="brand"><div class="mark">♠</div><div class="brandname">Card Table</div></div>
+    <div class="brand"><div class="mark">♠</div><div class="brandname">${esc(SITE.name)}</div></div>
     <div class="eyebrow">${esc(eyebrow)}</div>
     <h1>${esc(title)}</h1>
     <div class="sub">${esc(sub)}</div>
