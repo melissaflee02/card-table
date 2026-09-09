@@ -2,6 +2,7 @@ import { layout, SITE } from './layout.js';
 import { esc } from './escape.js';
 import { playerLabel, timeLabel } from './game.js';
 import { progressRing, EQUIPMENT, equipmentTier, decorativeCardFan } from './components.js';
+import { COLLECTIONS } from '../data/collections.js';
 
 // Bucket on the *typical* length (midpoint of the range), not the worst case.
 // Bucketing on time.max put every game in medium-or-longer and left the
@@ -134,6 +135,18 @@ export function homePage(games, planned) {
   <p class="empty" data-empty hidden>
     Nothing matches those filters. <button class="link-btn" type="button" data-reset>Clear them</button> and start over.
   </p>
+
+  <section class="collections">
+    <h2>Not sure what to play?</h2>
+    <ul class="collections__list">
+      ${COLLECTIONS.map((c) => `<li>
+        <a href="${esc(c.slug)}.html">
+          <span class="collections__name">${esc(c.heading)}</span>
+          <span class="collections__count">${esc(String(c.picks.length))} games, picked and explained</span>
+        </a>
+      </li>`).join('')}
+    </ul>
+  </section>
 
   ${planned?.length
       ? `<section class="coming-soon">

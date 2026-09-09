@@ -18,6 +18,7 @@ import { fileURLToPath } from 'node:url';
 
 import { GAMES } from '../src/data/index.js';
 import { PAGES } from '../src/data/pages.js';
+import { COLLECTIONS } from '../src/data/collections.js';
 import { SITE } from '../src/templates/layout.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -66,7 +67,8 @@ const isHidden = (ranges, i) => ranges.some(([a, b]) => i >= a && i <= b);
 // which left every assertion reading an empty array and passing vacuously.
 if (!existsSync(dist)) throw new Error('dist/ is missing — run `node build.js` first');
 /** @type {{path:string, html:string}[]} */
-const pages = ['index.html', '404.html', ...PAGES.map((p) => `${p.slug}.html`),
+const pages = ['index.html', '404.html',
+  ...PAGES.map((p) => `${p.slug}.html`), ...COLLECTIONS.map((c) => `${c.slug}.html`),
   ...readdirSync(join(dist, 'games')).map((f) => join('games', f))]
   .map((p) => ({ path: p, html: readFileSync(join(dist, p), 'utf8') }));
 const sitemap = readFileSync(join(dist, 'sitemap.xml'), 'utf8');
@@ -76,6 +78,7 @@ describe('pages exist', () => {
     const got = pages.map((p) => p.path).sort();
     const want = ['404.html', 'index.html',
       ...PAGES.map((p) => `${p.slug}.html`),
+      ...COLLECTIONS.map((c) => `${c.slug}.html`),
       ...GAMES.map((g) => join('games', `${g.slug}.html`))].sort();
     assert.deepEqual(got, want);
   });
@@ -199,6 +202,7 @@ describe('sitemap and robots', () => {
     const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
     const want = [`${SITE.origin}/`,
       ...GAMES.map((g) => `${SITE.origin}/games/${g.slug}.html`),
+      ...COLLECTIONS.map((c) => `${SITE.origin}/${c.slug}.html`),
       ...PAGES.map((p) => `${SITE.origin}/${p.slug}.html`)];
     assert.deepEqual(locs.sort(), want.sort());
   });
@@ -498,5 +502,106 @@ describe('related games', () => {
     }
     const orphans = GAMES.map((g) => g.slug).filter((s) => !linked.has(s));
     assert.deepEqual(orphans, [], `no game page links to: ${orphans.join(', ')}`);
+  });
+});
+
+describe('collection pages', () => {
+  // These target "what should we play?" searches that no single game page can
+  // rank for. Their whole defence against being doorway pages is that the
+  // picks are correct and the reasoning is specific, so both are asserted.
+  const pageFor = (c) => pages.find((p) => p.path === `${c.slug}.html`).html;
+
+  test('every pick genuinely satisfies the collection promise', () => {
+    for (const c of COLLECTIONS) {
+      for (const pick of c.picks) {
+        const g = GAMES.find((x) => x.slug === pick.slug);
+        assert.ok(g, `${c.slug}: unknown game ${pick.slug}`);
+        if (c.requires?.players !== undefined) {
+          assert.ok(g.players.min <= c.requires.players && g.players.max >= c.requires.players,
+            `${c.slug}: ${g.name} plays ${g.players.min}-${g.players.max}`);
+        }
+        if (c.requires?.difficulty) {
+          assert.equal(g.difficulty, c.requires.difficulty, `${c.slug}: ${g.name}`);
+        }
+      }
+    }
+  });
+
+  test('no collection silently omits a game that qualifies', () => {
+    // An incomplete list is a worse answer than a complete one, and the gap is
+    // easy to create by adding a game and forgetting the collections.
+    for (const c of COLLECTIONS) {
+      if (c.requires?.players === undefined) continue;
+      const n = c.requires.players;
+      const eligible = GAMES.filter((g) => g.players.min <= n && g.players.max >= n);
+      const listed = new Set(c.picks.map((p) => p.slug));
+      const missing = eligible.filter((g) => !listed.has(g.slug)).map((g) => g.slug);
+      // A deliberate exclusion must be justified in the caveat, by name.
+      const excused = missing.filter((slug) => {
+        const name = GAMES.find((g) => g.slug === slug).name;
+        return c.caveat && c.caveat.text.includes(name);
+      });
+      assert.deepEqual(missing.filter((m) => !excused.includes(m)), [],
+        `${c.slug}: qualifies but unlisted and unexplained — ${missing.join(', ')}`);
+    }
+  });
+
+  test('each reason is specific to its collection, not reused', () => {
+    const seen = new Map();
+    for (const c of COLLECTIONS) {
+      for (const p of c.picks) {
+        assert.ok(p.why.length >= 80, `${c.slug}/${p.slug}: reason too thin`);
+        const prev = seen.get(p.why);
+        assert.equal(prev, undefined, `${c.slug}/${p.slug}: reason reused from ${prev}`);
+        seen.set(p.why, `${c.slug}/${p.slug}`);
+      }
+    }
+  });
+
+  test('every collection links to the full rules of each pick', () => {
+    for (const c of COLLECTIONS) {
+      const html = pageFor(c);
+      for (const p of c.picks) {
+        assert.match(html, new RegExp(`href="games/${p.slug}\\.html"`),
+          `${c.slug}: no link to ${p.slug}`);
+      }
+    }
+  });
+
+  test('collections carry ItemList structured data matching their picks', () => {
+    for (const c of COLLECTIONS) {
+      const html = pageFor(c);
+      const raw = (html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/) ?? [])[1];
+      const graph = JSON.parse(raw)['@graph'] ?? [];
+      const list = graph.find((n) => n['@type'] === 'ItemList');
+      assert.ok(list, `${c.slug}: no ItemList`);
+      assert.equal(list.numberOfItems, c.picks.length);
+      assert.deepEqual(list.itemListElement.map((i) => i.position), c.picks.map((_, i) => i + 1));
+    }
+  });
+
+
+  test('any number written into the copy matches the number of picks', () => {
+    // "Five card games that work with two" above a list of four is the kind of
+    // error that survives every structural check and destroys trust on sight.
+    const words = { two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9 };
+    for (const c of COLLECTIONS) {
+      const prose = `${c.description} ${c.lede}`;
+      for (const m of prose.matchAll(/\b(two|three|four|five|six|seven|eight|nine)\s+(?:card\s+)?games?\b/gi)) {
+        assert.equal(words[m[1].toLowerCase()], c.picks.length,
+          `${c.slug}: copy says "${m[0]}" but there are ${c.picks.length} picks`);
+      }
+      for (const m of prose.matchAll(/\bThese\s+(two|three|four|five|six|seven|eight|nine)\b/gi)) {
+        assert.equal(words[m[1].toLowerCase()], c.picks.length,
+          `${c.slug}: copy says "${m[0]}" but there are ${c.picks.length} picks`);
+      }
+    }
+  });
+
+  test('the homepage points at every collection', () => {
+    const home = pages.find((p) => p.path === 'index.html').html;
+    for (const c of COLLECTIONS) {
+      assert.match(home, new RegExp(`href="${c.slug}\\.html"`), `homepage does not link ${c.slug}`);
+    }
   });
 });

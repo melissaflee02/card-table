@@ -15,6 +15,8 @@ import { gamePage } from './src/templates/game.js';
 import { relatedMap } from './src/templates/related.js';
 import { staticPage } from './src/templates/page.js';
 import { PAGES } from './src/data/pages.js';
+import { COLLECTIONS } from './src/data/collections.js';
+import { collectionPage } from './src/templates/collection.js';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const dist = join(root, 'dist');
@@ -166,6 +168,45 @@ export function checkMarkup(html, where) {
   return html;
 }
 
+/**
+ * A collection page is only worth having if its picks genuinely satisfy the
+ * promise in its title. "Card games for 3 players" listing a four-player-
+ * minimum game is worse than no page at all — it is exactly the thin, wrong
+ * filtered list that search engines treat as a doorway.
+ */
+function validateCollection(c, games) {
+  const where = `collection "${c.slug}"`;
+  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(c.slug)) throw new Error(`${where}: bad slug`);
+  if (!c.picks?.length) throw new Error(`${where}: no picks`);
+  const seen = new Set();
+  for (const pick of c.picks) {
+    const g = games.find((x) => x.slug === pick.slug);
+    if (!g) throw new Error(`${where}: unknown game "${pick.slug}"`);
+    if (seen.has(pick.slug)) throw new Error(`${where}: "${pick.slug}" listed twice`);
+    seen.add(pick.slug);
+    if (!pick.why || pick.why.length < 80) {
+      throw new Error(`${where}: "${pick.slug}" needs a reason specific to this collection`);
+    }
+    if (!pick.verdict) throw new Error(`${where}: "${pick.slug}" has no verdict`);
+
+    const req = c.requires ?? {};
+    if (req.players !== undefined
+        && !(g.players.min <= req.players && g.players.max >= req.players)) {
+      throw new Error(
+        `${where}: ${g.name} plays ${g.players.min}-${g.players.max}, so it does not support ${req.players}`
+      );
+    }
+    if (req.difficulty !== undefined && g.difficulty !== req.difficulty) {
+      throw new Error(`${where}: ${g.name} is "${g.difficulty}", not "${req.difficulty}"`);
+    }
+    if (req.maxMinutes !== undefined && (g.time.min + g.time.max) / 2 > req.maxMinutes) {
+      throw new Error(`${where}: ${g.name} averages over ${req.maxMinutes} minutes`);
+    }
+  }
+  // Two collections sharing an identical pick list would be duplicate content.
+  return [...seen].sort().join(',');
+}
+
 async function copyAssets() {
   // Recursive: src/assets now contains a fonts/ directory.
   const walk = async (from, to) => {
@@ -210,7 +251,8 @@ async function fingerprintAssets() {
     map.set(name, hashed);
   }
 
-  const pages = ['index.html', '404.html', ...PAGES.map((p) => `${p.slug}.html`),
+  const pages = ['index.html', '404.html',
+    ...PAGES.map((p) => `${p.slug}.html`), ...COLLECTIONS.map((c) => `${c.slug}.html`),
     ...(await readdir(join(dist, 'games'))).map((f) => join('games', f))];
   for (const page of pages) {
     const file = join(dist, page);
@@ -255,6 +297,17 @@ async function build() {
   // --- Crawler files -------------------------------------------------------
   // Generated from GAMES so a new game is discoverable without a manual edit.
   const today = new Date().toISOString().slice(0, 10);
+  const signatures = new Map();
+  for (const c of COLLECTIONS) {
+    const sig = validateCollection(c, GAMES);
+    if (signatures.has(sig)) {
+      throw new Error(`collection "${c.slug}" lists exactly the same games as "${signatures.get(sig)}"`);
+    }
+    signatures.set(sig, c.slug);
+    await writeFile(join(dist, `${c.slug}.html`),
+      checkMarkup(checkMeta(collectionPage(c, GAMES), `${c.slug}.html`), `${c.slug}.html`));
+  }
+
   for (const page of PAGES) {
     await writeFile(join(dist, `${page.slug}.html`),
       checkMarkup(checkMeta(staticPage(page), `${page.slug}.html`), `${page.slug}.html`));
@@ -263,6 +316,9 @@ async function build() {
   const urls = [
     { loc: `${SITE.origin}/`, priority: '1.0' },
     ...GAMES.map((g) => ({ loc: `${SITE.origin}/games/${g.slug}.html`, priority: '0.8' })),
+    // Collections answer "what should we play?", which is a higher-volume
+    // search than any single game, so they rank alongside the game pages.
+    ...COLLECTIONS.map((c) => ({ loc: `${SITE.origin}/${c.slug}.html`, priority: '0.8' })),
     // Low priority: real but not what anyone is searching for.
     ...PAGES.map((p) => ({ loc: `${SITE.origin}/${p.slug}.html`, priority: '0.3' })),
   ];
