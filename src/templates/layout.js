@@ -8,7 +8,18 @@ export const SITE = {
   // canonical tags, Open Graph and JSON-LD all derive from this.
   origin: 'https://melissaflee02.github.io/card-table',
   locale: 'en_GB',
+
+  // Contact. Set contactEmail once a domain exists (e.g. 'hello@cardtable.xyz')
+  // and every "report a rules problem" link switches to it automatically.
+  // Until then the issue tracker is the working route — better a real one than
+  // a published address that bounces.
+  contactEmail: '',
+  repo: 'https://github.com/melissaflee02/card-table',
 };
+
+SITE.issues = `${SITE.repo}/issues/new`;
+SITE.contactHref = SITE.contactEmail ? `mailto:${SITE.contactEmail}` : SITE.issues;
+SITE.contactLabel = SITE.contactEmail || 'open an issue on GitHub';
 
 // Set the theme before first paint so a dark-mode user never sees a white flash.
 const THEME_BOOT = `(function(){try{var t=localStorage.getItem('theme');
@@ -85,7 +96,12 @@ ${body}
 <footer class="site-footer">
   <div class="wrap">
     <p>${esc(SITE.name)} — ${esc(SITE.tagline)}</p>
-    <p class="site-footer__note">Rules are cross-checked against multiple sources. Where households genuinely differ, we say so under <em>House rules</em> rather than picking a winner.</p>
+    <p class="site-footer__note">Rules are cross-checked against sources named on every game page. Where households genuinely differ, we say so under <em>House rules</em> rather than picking a winner.</p>
+    <nav class="site-footer__links" aria-label="Site information">
+      <a href="${base}about.html">About &amp; editorial policy</a>
+      <a href="${base}privacy.html">Privacy</a>
+      <a href="${esc(SITE.contactHref)}"${SITE.contactEmail ? '' : ' rel="nofollow noopener noreferrer" target="_blank"'}>Report a rules problem</a>
+    </nav>
   </div>
 </footer>
 <script src="${base}assets/theme.js" defer></script>

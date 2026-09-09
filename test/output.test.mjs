@@ -17,6 +17,7 @@ import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { GAMES } from '../src/data/index.js';
+import { PAGES } from '../src/data/pages.js';
 import { SITE } from '../src/templates/layout.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -65,15 +66,16 @@ const isHidden = (ranges, i) => ranges.some(([a, b]) => i >= a && i <= b);
 // which left every assertion reading an empty array and passing vacuously.
 if (!existsSync(dist)) throw new Error('dist/ is missing — run `node build.js` first');
 /** @type {{path:string, html:string}[]} */
-const pages = ['index.html', '404.html',
+const pages = ['index.html', '404.html', ...PAGES.map((p) => `${p.slug}.html`),
   ...readdirSync(join(dist, 'games')).map((f) => join('games', f))]
   .map((p) => ({ path: p, html: readFileSync(join(dist, p), 'utf8') }));
 const sitemap = readFileSync(join(dist, 'sitemap.xml'), 'utf8');
 
 describe('pages exist', () => {
-  test('one page per game, plus home and 404', () => {
+  test('one page per game, plus home, 404 and the prose pages', () => {
     const got = pages.map((p) => p.path).sort();
     const want = ['404.html', 'index.html',
+      ...PAGES.map((p) => `${p.slug}.html`),
       ...GAMES.map((g) => join('games', `${g.slug}.html`))].sort();
     assert.deepEqual(got, want);
   });
@@ -195,7 +197,9 @@ describe('search metadata', () => {
 describe('sitemap and robots', () => {
   test('contains the homepage and every game, and nothing else', async () => {
     const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-    const want = [`${SITE.origin}/`, ...GAMES.map((g) => `${SITE.origin}/games/${g.slug}.html`)];
+    const want = [`${SITE.origin}/`,
+      ...GAMES.map((g) => `${SITE.origin}/games/${g.slug}.html`),
+      ...PAGES.map((p) => `${SITE.origin}/${p.slug}.html`)];
     assert.deepEqual(locs.sort(), want.sort());
   });
 
@@ -377,6 +381,58 @@ describe('provenance', () => {
         assert.match(m[0], /rel="[^"]*noopener/, `${path}: off-site link without noopener — ${m[1]}`);
         assert.match(m[0], /rel="[^"]*nofollow/, `${path}: off-site link without nofollow — ${m[1]}`);
       }
+    }
+  });
+});
+
+describe('the privacy promise holds', () => {
+  // privacy.html states there are no cookies, no analytics and no third-party
+  // requests. That is a public commitment, so it is asserted rather than
+  // trusted — adding a CDN font or an analytics tag turns the suite red in the
+  // same commit that would have made the page a lie.
+  test('no page loads anything from another origin', () => {
+    for (const { path, html } of pages) {
+      for (const m of html.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)) {
+        const url = m[1];
+        if (url.startsWith(SITE.origin)) continue;         // own absolute links
+        const isLink = new RegExp(`<a[^>]+href="${url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`).test(html);
+        assert.ok(isLink, `${path}: loads a subresource from another origin — ${url}`);
+      }
+    }
+  });
+
+  test('no analytics, tag manager or tracking pixel', () => {
+    const banned = /google-analytics|googletagmanager|gtag\(|analytics\.js|plausible|fathom|hotjar|segment\.io|facebook\.net|doubleclick/i;
+    for (const { path, html } of pages) {
+      assert.doesNotMatch(html, banned, `${path} contains a tracking script`);
+    }
+  });
+
+  test('no cookies are set anywhere in the shipped javascript', async () => {
+    const files = (await readdir(join(dist, 'assets'))).filter((f) => f.endsWith('.js'));
+    for (const f of files) {
+      const src = await readFile(join(dist, 'assets', f), 'utf8');
+      assert.doesNotMatch(src, /document\.cookie/, `${f} touches document.cookie`);
+    }
+  });
+
+  test('local storage is limited to the keys privacy.html discloses', async () => {
+    const files = (await readdir(join(dist, 'assets'))).filter((f) => f.endsWith('.js'));
+    const disclosed = [/'theme'/, /'drills:'/, /'scores:'/];
+    for (const f of files) {
+      const src = await readFile(join(dist, 'assets', f), 'utf8');
+      for (const m of src.matchAll(/(?:localStorage|sessionStorage)\.(?:setItem|getItem)\(([^,)]+)/g)) {
+        const key = m[1].trim();
+        const ok = disclosed.some((d) => d.test(key)) || /KEY|PREFIX|\+/.test(key);
+        assert.ok(ok, `${f}: undisclosed storage key ${key} — update privacy.html`);
+      }
+    }
+  });
+
+  test('about and privacy are reachable from every page', () => {
+    for (const { path, html } of pages) {
+      assert.match(html, /href="[^"]*about\.html"/, `${path}: no link to About`);
+      assert.match(html, /href="[^"]*privacy\.html"/, `${path}: no link to Privacy`);
     }
   });
 });

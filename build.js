@@ -12,6 +12,8 @@ import { ACTIVE, THEMES, themeCss } from './src/data/themes/index.js';
 import { SITE, layout } from './src/templates/layout.js';
 import { homePage } from './src/templates/home.js';
 import { gamePage } from './src/templates/game.js';
+import { staticPage } from './src/templates/page.js';
+import { PAGES } from './src/data/pages.js';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const dist = join(root, 'dist');
@@ -207,7 +209,7 @@ async function fingerprintAssets() {
     map.set(name, hashed);
   }
 
-  const pages = ['index.html', '404.html',
+  const pages = ['index.html', '404.html', ...PAGES.map((p) => `${p.slug}.html`),
     ...(await readdir(join(dist, 'games'))).map((f) => join('games', f))];
   for (const page of pages) {
     const file = join(dist, page);
@@ -247,9 +249,16 @@ async function build() {
   // --- Crawler files -------------------------------------------------------
   // Generated from GAMES so a new game is discoverable without a manual edit.
   const today = new Date().toISOString().slice(0, 10);
+  for (const page of PAGES) {
+    await writeFile(join(dist, `${page.slug}.html`),
+      checkMarkup(checkMeta(staticPage(page), `${page.slug}.html`), `${page.slug}.html`));
+  }
+
   const urls = [
     { loc: `${SITE.origin}/`, priority: '1.0' },
     ...GAMES.map((g) => ({ loc: `${SITE.origin}/games/${g.slug}.html`, priority: '0.8' })),
+    // Low priority: real but not what anyone is searching for.
+    ...PAGES.map((p) => ({ loc: `${SITE.origin}/${p.slug}.html`, priority: '0.3' })),
   ];
   await writeFile(join(dist, 'sitemap.xml'),
     `<?xml version="1.0" encoding="UTF-8"?>\n` +

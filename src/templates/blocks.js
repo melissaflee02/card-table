@@ -3,6 +3,11 @@
 // gets identical markup and styling for free.
 
 import { esc } from './escape.js';
+
+// Duplicated from SITE.origin rather than imported: layout.js imports the
+// components that import this file, so importing back would be circular.
+// Kept honest by a unit test that asserts the two stay equal.
+const SITE_ORIGIN = 'https://melissaflee02.github.io/card-table';
 import { renderDiagram } from './diagram.js';
 
 export { esc };
@@ -13,10 +18,19 @@ const inline = (s) =>
   esc(s)
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/(^|[^*])\*([^*]+)\*/g, '$1<em>$2</em>')
-    .replace(/`([^`]+)`/g, '<code>$1</code>');
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    // [text](href). Off-site links get noopener/noreferrer and open in a new
+    // tab; same-site ones stay in place. esc() has already run, so the href is
+    // safe to interpolate, and the scheme is restricted to avoid javascript:.
+    .replace(/\[([^\]]+)\]\(((?:https?:\/\/|mailto:|\/|#)[^)\s]+)\)/g, (_, text, href) =>
+      /^https?:\/\//.test(href) && !href.startsWith(SITE_ORIGIN)
+        ? `<a href="${href}" rel="nofollow noopener noreferrer" target="_blank">${text}</a>`
+        : `<a href="${href}">${text}</a>`);
 
 const renderers = {
   p: (b) => `<p>${inline(b.text)}</p>`,
+
+  h2: (b) => `<h2${b.id ? ` id="${esc(b.id)}"` : ''}>${inline(b.text)}</h2>`,
 
   ul: (b) => `<ul>${b.items.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>`,
 
