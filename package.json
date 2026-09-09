@@ -8,7 +8,7 @@
     "build": "node build.js",
     "serve": "node build.js && python3 -m http.server -d dist 4173",
     "og": "node scripts/og-cards.mjs",
-    "test": "node build.js && node --test test/",
+    "test": "node build.js && node --test test/*.test.mjs",
     "test:unit": "node --test test/unit.test.mjs"
   }
 }
