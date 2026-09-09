@@ -306,7 +306,6 @@ async function build() {
 
   // --- Crawler files -------------------------------------------------------
   // Generated from GAMES so a new game is discoverable without a manual edit.
-  const today = new Date().toISOString().slice(0, 10);
   const signatures = new Map();
   for (const c of COLLECTIONS) {
     const sig = validateCollection(c, GAMES);
@@ -323,20 +322,48 @@ async function build() {
       checkMarkup(checkMeta(staticPage(page), `${page.slug}.html`), `${page.slug}.html`));
   }
 
+  // lastmod comes from the dates already in the content — each game's `reviewed`
+  // and each collection's `updated` — not from the clock.
+  //
+  // Stamping new Date() on every URL every build told Google that all twenty
+  // pages changed every time anything shipped, which is both false and the
+  // exact pattern that makes Google discard lastmod as unreliable. Then it
+  // cannot tell a brand-new game from one untouched for a month. These dates
+  // are already displayed on the pages, so the sitemap now agrees with them.
+  const newest = (dates) => dates.slice().sort().at(-1);
+  const allContentDates = [
+    ...GAMES.map((g) => g.reviewed),
+    ...COLLECTIONS.map((c) => c.updated),
+  ].filter(Boolean);
+
   const urls = [
-    { loc: `${SITE.origin}/`, priority: '1.0' },
-    ...GAMES.map((g) => ({ loc: `${SITE.origin}/games/${g.slug}.html`, priority: '0.8' })),
+    // The homepage lists every game, so it genuinely changes whenever any does.
+    { loc: `${SITE.origin}/`, priority: '1.0', lastmod: newest(allContentDates) },
+    ...GAMES.map((g) => ({
+      loc: `${SITE.origin}/games/${g.slug}.html`, priority: '0.8', lastmod: g.reviewed,
+    })),
     // Collections answer "what should we play?", which is a higher-volume
     // search than any single game, so they rank alongside the game pages.
-    ...COLLECTIONS.map((c) => ({ loc: `${SITE.origin}/${c.slug}.html`, priority: '0.8' })),
+    ...COLLECTIONS.map((c) => ({
+      loc: `${SITE.origin}/${c.slug}.html`, priority: '0.8', lastmod: c.updated,
+    })),
     // Low priority: real but not what anyone is searching for.
-    ...PAGES.map((p) => ({ loc: `${SITE.origin}/${p.slug}.html`, priority: '0.3' })),
+    ...PAGES.map((p) => ({
+      loc: `${SITE.origin}/${p.slug}.html`, priority: '0.3', lastmod: p.updated,
+    })),
   ];
+
+  for (const u of urls) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(u.lastmod || '')) {
+      throw new Error(`sitemap: ${u.loc} has no usable lastmod (got ${JSON.stringify(u.lastmod)})`);
+    }
+  }
+
   await writeFile(join(dist, 'sitemap.xml'),
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     urls.map((u) =>
-      `  <url>\n    <loc>${u.loc}</loc>\n    <lastmod>${today}</lastmod>\n` +
+      `  <url>\n    <loc>${u.loc}</loc>\n    <lastmod>${u.lastmod}</lastmod>\n` +
       `    <changefreq>monthly</changefreq>\n    <priority>${u.priority}</priority>\n  </url>`
     ).join('\n') + `\n</urlset>\n`);
 

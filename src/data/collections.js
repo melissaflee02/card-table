@@ -11,7 +11,7 @@
 // `pick.why` must be specific to the collection. If the same sentence would
 // work on another page, it is not pulling its weight.
 
-const UPDATED = '2026-09-08';
+const UPDATED = '2026-09-09';
 
 export const COLLECTIONS = [
   {

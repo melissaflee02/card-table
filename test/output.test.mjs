@@ -623,3 +623,49 @@ describe('collection pages', () => {
     }
   });
 });
+
+describe('sitemap lastmod', () => {
+  const sitemap = readFileSync(join(dist, 'sitemap.xml'), 'utf8');
+  const entries = [...sitemap.matchAll(/<loc>([^<]*)<\/loc>\s*<lastmod>([^<]*)<\/lastmod>/g)]
+    .map(([, loc, lastmod]) => ({ loc, lastmod }));
+
+  test('every entry carries an ISO date', () => {
+    assert.ok(entries.length, 'no sitemap entries parsed');
+    for (const e of entries) {
+      assert.match(e.lastmod, /^\d{4}-\d{2}-\d{2}$/, `${e.loc}: bad lastmod "${e.lastmod}"`);
+    }
+  });
+
+  test('lastmod matches the date shown on the page, not the build clock', () => {
+    // Stamping today's date on every URL every build is what makes Google
+    // discard lastmod as unreliable, and it hides which pages actually changed.
+    for (const g of GAMES) {
+      const e = entries.find((x) => x.loc.endsWith(`/games/${g.slug}.html`));
+      assert.ok(e, `${g.slug} missing from sitemap`);
+      assert.equal(e.lastmod, g.reviewed, `${g.slug}: sitemap and page disagree`);
+    }
+    for (const c of COLLECTIONS) {
+      const e = entries.find((x) => x.loc.endsWith(`/${c.slug}.html`));
+      assert.ok(e, `${c.slug} missing from sitemap`);
+      assert.equal(e.lastmod, c.updated, `${c.slug}: sitemap and page disagree`);
+    }
+  });
+
+  test('dates are not all identical once the catalogue has mixed ages', () => {
+    // A single distinct date across every URL is the signature of a clock
+    // stamp. It is legitimate only while everything genuinely shipped at once.
+    const contentDates = new Set(GAMES.map((g) => g.reviewed));
+    if (contentDates.size > 1) {
+      const inSitemap = new Set(entries.map((e) => e.lastmod));
+      assert.ok(inSitemap.size > 1,
+        'every sitemap lastmod is the same date despite games having different reviewed dates');
+    }
+  });
+
+  test('no lastmod is in the future', () => {
+    const today = new Date().toISOString().slice(0, 10);
+    for (const e of entries) {
+      assert.ok(e.lastmod <= today, `${e.loc}: lastmod ${e.lastmod} is in the future`);
+    }
+  });
+});
