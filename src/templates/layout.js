@@ -15,6 +15,14 @@ export const SITE = {
   // a published address that bounces.
   contactEmail: '',
   repo: 'https://github.com/melissaflee02/card-table',
+
+  // Search-engine ownership tokens. A list rather than one value because a
+  // domain move needs both properties verified at once: the old github.io
+  // prefix keeps reporting history while the new domain warms up, and removing
+  // the old token too early un-verifies it.
+  verification: [
+    { name: 'google-site-verification', content: 'mpw6xEbdUtjOcs0-K2mKdM9s_lyFF9mvX1fqPOdgt2g' },
+  ],
 };
 
 SITE.issues = `${SITE.repo}/issues/new`;
@@ -45,6 +53,7 @@ export function layout({
 <title>${esc(fullTitle)}</title>
 <meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${esc(canonical)}">
+${SITE.verification.map((v) => `<meta name="${esc(v.name)}" content="${esc(v.content)}">`).join('\n')}
 ${noindex ? '<meta name="robots" content="noindex, follow">' : ''}
 <meta property="og:site_name" content="${esc(SITE.name)}">
 <meta property="og:title" content="${esc(fullTitle)}">

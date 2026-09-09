@@ -173,6 +173,18 @@ describe('search metadata', () => {
     }
   });
 
+
+  test('search-engine verification tokens are present on the property root', () => {
+    // Losing this silently un-verifies the Search Console property, and the
+    // only symptom is that indexing reports quietly stop updating.
+    assert.ok(SITE.verification.length, 'no verification tokens configured');
+    const home = pages.find((p) => p.path === 'index.html').html;
+    for (const v of SITE.verification) {
+      assert.match(home, new RegExp(`<meta name="${v.name}" content="${v.content}">`),
+        `index.html is missing the ${v.name} token`);
+    }
+  });
+
   test('only the 404 is noindex', () => {
     for (const { path, html } of pages) {
       const robots = /name="robots"[^>]*content="[^"]*noindex/.test(html);
