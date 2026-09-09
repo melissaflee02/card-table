@@ -29,6 +29,7 @@ const TAG_LABELS = {
   shedding: 'Shedding',
   melds: 'Melds & runs',
   memory: 'Memory',
+  counting: 'Counting',
   bluffing: 'Bluffing',
   party: 'Party',
 };

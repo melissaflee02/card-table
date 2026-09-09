@@ -19,8 +19,8 @@ export const COLLECTIONS = [
     title: 'Card Games for Two Players',
     heading: 'The best card games for two players',
     description:
-      'Four card games that genuinely work with two people — what each one is good at, how long it takes, and which to learn first.',
-    lede: 'Most card games are built for a table. These four are good with exactly two — and one of them is the best two-player card game there is.',
+      'Five card games that genuinely work with two people — what each one is good at, how long it takes, and which to learn first.',
+    lede: 'Most card games are built for a table. These five are good with exactly two, and two of them are among the best two-player games there are.',
     updated: UPDATED,
     // Every pick is checked against this at build time.
     requires: { players: 2 },
@@ -39,6 +39,11 @@ export const COLLECTIONS = [
         slug: 'gin-rummy',
         verdict: 'Start here',
         why: 'The only game on this list designed for two rather than merely tolerating it, and it shows. Every card you take from the discard pile tells your opponent what you are collecting, so the whole game is a slow negotiation over information. Nothing is diluted by the player count because the player count *is* two.',
+      },
+      {
+        slug: 'cribbage',
+        verdict: 'The one to learn if you will play it often',
+        why: 'The deepest game here by a distance, and built for exactly two. Every discard is a real decision because two of your six cards go into a hand your opponent may end up scoring. The only pick on this list that wants a board — though pen and paper, or the tracker on its page, does the job.',
       },
       {
         slug: 'golf',
@@ -63,7 +68,7 @@ export const COLLECTIONS = [
     outro: [
       {
         type: 'p',
-        text: 'If you only learn one, learn Gin Rummy. It is the one that stays interesting after the tenth play, and the scoring gives a session a shape rather than just a sequence of rounds.',
+        text: 'Pick by how much you want to invest. **Gin Rummy** you can learn in five minutes and it stays interesting for years. **Cribbage** takes a couple of hands before the scoring clicks, and then outlasts everything else here — it is still played competitively four hundred years on.',
       },
     ],
   },
