@@ -330,6 +330,17 @@ async function build() {
       `    <changefreq>monthly</changefreq>\n    <priority>${u.priority}</priority>\n  </url>`
     ).join('\n') + `\n</urlset>\n`);
 
+  // GitHub Pages needs a CNAME file inside the published artifact to keep
+  // serving a custom domain. With Actions-based deploys the value set in
+  // Settings alone can be cleared by a later deploy, which silently drops the
+  // domain and reverts the site to the github.io URL. Derived from SITE.origin
+  // so switching domains stays a one-line change — and emitted only for a real
+  // custom domain, since a CNAME naming github.io would break the default URL.
+  const host = new URL(SITE.origin).hostname;
+  if (!host.endsWith('github.io')) {
+    await writeFile(join(dist, 'CNAME'), `${host}\n`);
+  }
+
   await writeFile(join(dist, 'robots.txt'),
     `User-agent: *\nAllow: /\n\nSitemap: ${SITE.origin}/sitemap.xml\n`);
 
