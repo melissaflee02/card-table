@@ -7,18 +7,18 @@ import spades from './games/spades.js';
 import crazyEights from './games/crazy-eights.js';
 import golf from './games/golf.js';
 import cheat from './games/cheat.js';
+import euchre from './games/euchre.js';
 
 // Order here is the order on the homepage and the prev/next pager.
 export const GAMES = [
   cambio, ginRummy, palace, hearts, president,
-  spades, crazyEights, golf, cheat,
+  spades, crazyEights, golf, cheat, euchre,
 ];
 
 // Roadmap. Adding a game = write src/data/games/<slug>.js, import it above,
 // and delete its entry from this list.
 export const PLANNED = [
   // Wave 2 remainder — standard 52-card deck.
-  { name: 'Euchre', note: 'trick-taking' },
   { name: 'Cribbage', note: 'needs a board' },
   { name: 'Rummy 500', note: 'melds, 2–6' },
   { name: 'Spoons', note: 'reflex' },
