@@ -19,6 +19,7 @@ import { fileURLToPath } from 'node:url';
 import { GAMES } from '../src/data/index.js';
 import { PAGES } from '../src/data/pages.js';
 import { COLLECTIONS } from '../src/data/collections.js';
+import { qualifyingGames } from '../src/templates/collection.js';
 import { SITE } from '../src/templates/layout.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -546,21 +547,46 @@ describe('collection pages', () => {
   });
 
   test('no collection silently omits a game that qualifies', () => {
-    // An incomplete list is a worse answer than a complete one, and the gap is
-    // easy to create by adding a game and forgetting the collections.
+    // Completeness without forcing bloat. A qualifying game must appear
+    // somewhere on the page — as a ranked pick, in the "also works" list, or
+    // argued against by name in the caveat. Requiring everything to be a
+    // *pick* is what turns a curated shortlist into the filtered list these
+    // pages exist to replace, so the also-list carries the long tail.
     for (const c of COLLECTIONS) {
-      if (c.requires?.players === undefined) continue;
-      const n = c.requires.players;
-      const eligible = GAMES.filter((g) => g.players.min <= n && g.players.max >= n);
-      const listed = new Set(c.picks.map((p) => p.slug));
-      const missing = eligible.filter((g) => !listed.has(g.slug)).map((g) => g.slug);
-      // A deliberate exclusion must be justified in the caveat, by name.
-      const excused = missing.filter((slug) => {
-        const name = GAMES.find((g) => g.slug === slug).name;
-        return c.caveat && c.caveat.text.includes(name);
-      });
-      assert.deepEqual(missing.filter((m) => !excused.includes(m)), [],
-        `${c.slug}: qualifies but unlisted and unexplained — ${missing.join(', ')}`);
+      const html = pages.find((p) => p.path === `${c.slug}.html`).html;
+      for (const g of qualifyingGames(c, GAMES)) {
+        const linked = html.includes(`href="games/${g.slug}.html"`);
+        const excused = c.caveat?.text.includes(g.name) ?? false;
+        assert.ok(linked || excused,
+          `${c.slug}: ${g.name} qualifies but appears nowhere on the page`);
+      }
+    }
+  });
+
+  test('the ranked list stays short enough to be an opinion', () => {
+    // Past about eight the page stops being a recommendation and starts being
+    // a directory, which is the failure mode this whole design guards against.
+    for (const c of COLLECTIONS) {
+      assert.ok(c.picks.length <= 8,
+        `${c.slug}: ${c.picks.length} ranked picks — move the weakest to the also-list`);
+    }
+  });
+
+  test('the also-list names every qualifier that is not a pick', () => {
+    for (const c of COLLECTIONS) {
+      const html = pages.find((p) => p.path === `${c.slug}.html`).html;
+      const picked = new Set(c.picks.map((p) => p.slug));
+      const expected = qualifyingGames(c, GAMES)
+        .filter((g) => !picked.has(g.slug))
+        .filter((g) => !(c.caveat?.text.includes(g.name) ?? false));
+      if (!expected.length) return;
+      const start = html.indexOf('class="also"');
+      assert.notEqual(start, -1, `${c.slug}: has unlisted qualifiers but no also-list`);
+      const section = html.slice(start, html.indexOf('</section>', start));
+      for (const g of expected) {
+        assert.ok(section.includes(`games/${g.slug}.html`),
+          `${c.slug}: ${g.name} missing from the also-list`);
+      }
     }
   });
 

@@ -16,6 +16,28 @@ const longDate = (iso) =>
   new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB',
     { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
+/**
+ * Which games satisfy a collection's own criterion. The template uses this to
+ * list qualifying games that did not make the curated cut.
+ *
+ * Without it the coverage test forces every qualifying game into the ranked
+ * list, and at fifteen games that turns an opinionated shortlist back into the
+ * undifferentiated filtered list these pages exist to avoid. Naming the rest
+ * in a line underneath keeps the page complete and honest while leaving the
+ * ranking short enough to be worth reading — and it is derived, so a new game
+ * can never be silently missing.
+ */
+export function qualifyingGames(collection, games) {
+  const req = collection.requires ?? {};
+  return games.filter((g) => {
+    if (req.players !== undefined
+        && !(g.players.min <= req.players && g.players.max >= req.players)) return false;
+    if (req.difficulty !== undefined && g.difficulty !== req.difficulty) return false;
+    if (req.maxMinutes !== undefined && (g.time.min + g.time.max) / 2 > req.maxMinutes) return false;
+    return true;
+  });
+}
+
 export function collectionPage(collection, games) {
   const byslug = new Map(games.map((g) => [g.slug, g]));
   const picks = collection.picks.map((p) => ({ ...p, game: byslug.get(p.slug) }));
@@ -39,6 +61,13 @@ export function collectionPage(collection, games) {
       </div>
     </li>`;
 
+  // Qualifying games that are not in the ranked list. Named rather than hidden.
+  const listed = new Set(collection.picks.map((p) => p.slug));
+  const alsoWorks = qualifyingGames(collection, games)
+    .filter((g) => !listed.has(g.slug))
+    // A game excluded on purpose is argued in the caveat; do not contradict it.
+    .filter((g) => !collection.caveat?.text.includes(g.name));
+
   const body = `
   <div class="wrap">
     <nav class="crumb" aria-label="Breadcrumb"><a href="index.html">← All games</a></nav>
@@ -51,6 +80,16 @@ export function collectionPage(collection, games) {
       ${renderBlocks(collection.intro)}
 
       <ol class="picks">${picks.map(card).join('')}</ol>
+
+      ${alsoWorks.length ? `
+      <section class="also">
+        <h2>Also works, but did not make the list</h2>
+        <p>These fit ${esc(collection.alsoNote ?? 'the same criteria')} — they are just not where we would start.</p>
+        <ul class="also__list">${alsoWorks.map((g) => `
+          <li><a href="games/${esc(g.slug)}.html">${esc(g.name)}</a>
+            <span>${esc(playerLabel(g.players))} · ${esc(timeLabel(g.time))}</span></li>`).join('')}
+        </ul>
+      </section>` : ''}
 
       ${collection.caveat ? `
       <aside class="callout callout--warning">

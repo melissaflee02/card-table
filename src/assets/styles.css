@@ -826,3 +826,16 @@ p.callout { padding: 1rem 1.2rem; }
 .collections__list a:hover { border-color: var(--border-strong); background: var(--surface-2); color: var(--text); }
 .collections__name { display: block; font-weight: 700; margin-bottom: .15rem; }
 .collections__count { display: block; font-size: .85rem; color: var(--text-muted); }
+
+/* Qualifying games that did not make a collection's ranked list. Deliberately
+   quieter than the picks — present for completeness, not for persuasion. */
+.also { margin-top: 2.25rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+.also h2 {
+  font-size: .72rem; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: .5rem;
+}
+.also > p { font-size: .9rem; color: var(--text-muted); margin-bottom: .8rem; }
+.also__list { list-style: none; margin: 0; padding: 0; display: grid; gap: .4rem; }
+@media (min-width: 40rem) { .also__list { grid-template-columns: repeat(2, 1fr); } }
+.also__list li { display: flex; gap: .6rem; align-items: baseline; font-size: .9rem; }
+.also__list span { color: var(--text-muted); font-size: .82rem; }

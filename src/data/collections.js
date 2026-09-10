@@ -24,6 +24,7 @@ export const COLLECTIONS = [
     updated: UPDATED,
     // Every pick is checked against this at build time.
     requires: { players: 2 },
+    alsoNote: 'two players',
     intro: [
       {
         type: 'p',
@@ -87,6 +88,7 @@ export const COLLECTIONS = [
     lede: 'Three is the awkward number. Partnership games are out, and a lot of classics quietly assume four. These eight are fine with three — one of them needs a card removed first.',
     updated: UPDATED,
     requires: { players: 3 },
+    alsoNote: 'three players',
     intro: [
       {
         type: 'p',
@@ -119,6 +121,11 @@ export const COLLECTIONS = [
         why: 'Three is a good number for it: enough players that the discard pile builds up between your turns, few enough that one deck is plenty. It is also the only game here you can lay cards onto other people\'s melds, which keeps you watching the table rather than just your hand.',
       },
       {
+        slug: 'kings-in-the-corner',
+        verdict: 'Best for a quiet table',
+        why: 'Three or four is its sweet spot: enough players that the shared layout keeps changing between your turns, few enough that you can still plan around it. It is the calmest game on this list — no bluffing, no grabbing, no reading anyone.',
+      },
+      {
         slug: 'cambio',
         verdict: 'Good memory game for three',
         why: 'At three the power cards finally have a real choice of target — the flatness that hurts the two-player game disappears. Rounds stay short, so a bad memory costs you ten minutes rather than an hour.',
@@ -127,11 +134,6 @@ export const COLLECTIONS = [
         slug: 'golf',
         verdict: 'Quiet and low-conflict',
         why: 'Nothing in Golf depends on the number of opponents; you are mostly playing against your own layout. That makes three exactly as good as four, and it is the calmest game here if you want to talk while you play.',
-      },
-      {
-        slug: 'spoons',
-        verdict: 'Works at three, but wants more',
-        why: 'Three players and two spoons is a real game and takes about a minute to teach. It is included with a caveat: the scramble is the whole point, and with only one person missing out each round there is much less of one. If a fourth turns up, play this.',
       },
       {
         slug: 'crazy-eights',
@@ -153,9 +155,10 @@ export const COLLECTIONS = [
     heading: 'Card games for six or more',
     description:
       'Card games that hold up with six, seven or eight players — including which ones need a second deck and which get slow at the top of their range.',
-    lede: 'Most card games quietly stop working above five. These seven handle a crowd — two of them all the way to eight.',
+    lede: 'Most card games quietly stop working above five. These eight handle a crowd — two of them all the way to eight.',
     updated: UPDATED,
     requires: { players: 6 },
+    alsoNote: 'six or more',
     intro: [
       {
         type: 'p',
@@ -181,6 +184,11 @@ export const COLLECTIONS = [
         slug: 'crazy-eights',
         verdict: 'Up to 8, with a caveat',
         why: 'Handles eight on one deck, though hands get thin — deal five and expect short rounds. Add a second deck if you are at seven or eight regularly. Turns are fast, so even a full table comes back to you quickly.',
+      },
+      {
+        slug: 'egyptian-ratscrew',
+        verdict: 'Loudest option, up to 6',
+        why: 'Everyone watches the same pile the entire time, so nobody is ever idle waiting for a turn to come round. More players means more hands racing for the same slap, which is exactly what makes it work — and a player down to their last card can win the whole deck back in one go.',
       },
       {
         slug: 'president',
@@ -216,10 +224,11 @@ export const COLLECTIONS = [
     title: 'Easy Card Games for Beginners',
     heading: 'Easy card games anyone can learn in five minutes',
     description:
-      'Seven card games with rules simple enough to teach at the table, ranked by how quickly a complete beginner can start playing.',
-    lede: 'Seven games you can teach in the time it takes to deal them — ordered by how little explaining they need.',
+      'Eight card games with rules simple enough to teach at the table, ranked by how quickly a complete beginner can start playing.',
+    lede: 'Eight games you can teach in the time it takes to deal them — ordered by how little explaining they need.',
     updated: UPDATED,
     requires: { difficulty: 'easy' },
+    alsoNote: 'the beginner bar',
     intro: [
       {
         type: 'p',
@@ -240,6 +249,11 @@ export const COLLECTIONS = [
         slug: 'spoons',
         verdict: 'No rules to learn at all',
         why: 'Collect four of the same number, take a spoon. There are no card values, no scoring and no turn order to explain — a child can join halfway through a round and be fine. The only thing worth saying out loud beforehand is that once one spoon goes, everybody grabs.',
+      },
+      {
+        slug: 'egyptian-ratscrew',
+        verdict: 'Two rules, and one of them is optional',
+        why: 'Turn over your top card. That is the entire turn — you never choose anything. The only thing to learn is that matching cards mean you slap the pile, and even the face-card counts can be picked up mid-game without stopping. Best taught by playing one round badly.',
       },
       {
         slug: 'cheat',
